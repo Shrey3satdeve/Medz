@@ -195,8 +195,8 @@ OR
 
 ## Files Modified
 
-1. `fronted/login.html` - Added Google Sign-In button and logic
-2. `fronted/signup.html` - Added Google Sign-Up button and logic
+1. `frontend/login.html` - Added Google Sign-In button and logic
+2. `frontend/signup.html` - Added Google Sign-Up button and logic
 3. `backend/controllers/auth.controller.js` - Added `googleAuth` function
 4. `backend/routes/auth.routes.js` - Added `/google` route
 5. `backend/database/auth-tables.sql` - Added Google-related columns

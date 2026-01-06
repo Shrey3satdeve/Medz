@@ -3,7 +3,7 @@
 <html lang="en">
 
 <head>
-    <title>Code coverage report for controllers/orders.controller.js</title>
+    <title>Code coverage report for routes/medical.routes.js</title>
     <meta charset="utf-8" />
     <link rel="stylesheet" href="../prettify.css" />
     <link rel="stylesheet" href="../base.css" />
@@ -19,34 +19,34 @@
 <body>
 <div class='wrapper'>
     <div class='pad1'>
-        <h1><a href="../index.html">All files</a> / <a href="index.html">controllers</a> orders.controller.js</h1>
+        <h1><a href="../index.html">All files</a> / <a href="index.html">routes</a> medical.routes.js</h1>
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/16</span>
+                <span class='fraction'>0/11</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/12</span>
+                <span class='fraction'>0/0</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>0/2</span>
+                <span class='fraction'>0/0</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/15</span>
+                <span class='fraction'>0/11</span>
             </div>
         
             
@@ -89,77 +89,59 @@
 <a name='L24'></a><a href='#L24'>24</a>
 <a name='L25'></a><a href='#L25'>25</a>
 <a name='L26'></a><a href='#L26'>26</a>
-<a name='L27'></a><a href='#L27'>27</a>
-<a name='L28'></a><a href='#L28'>28</a>
-<a name='L29'></a><a href='#L29'>29</a>
-<a name='L30'></a><a href='#L30'>30</a>
-<a name='L31'></a><a href='#L31'>31</a>
-<a name='L32'></a><a href='#L32'>32</a>
-<a name='L33'></a><a href='#L33'>33</a></td><td class="line-coverage quiet"><span class="cline-any cline-no">&nbsp;</span>
+<a name='L27'></a><a href='#L27'>27</a></td><td class="line-coverage quiet"><span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">const { getAllOrders, createOrder: dbCreateOrder } = <span class="cstat-no" title="statement not covered" >require('../utils/db');</span>
-const { nanoid } = <span class="cstat-no" title="statement not covered" >require('nanoid');</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">const express = <span class="cstat-no" title="statement not covered" >require('express');</span>
+const router = <span class="cstat-no" title="statement not covered" >express.Router();</span>
+const medicalController = <span class="cstat-no" title="statement not covered" >require('../controllers/medical.controller');</span>
 &nbsp;
-<span class="cstat-no" title="statement not covered" >exports.listOrders = <span class="fstat-no" title="function not covered" >as</span>ync (req, res, next) =&gt; {</span>
-<span class="cstat-no" title="statement not covered" >  try {</span>
-    const orders = <span class="cstat-no" title="statement not covered" >getAllOrders();</span>
-<span class="cstat-no" title="statement not covered" >    res.json(orders);</span>
-  } catch (err) {
-<span class="cstat-no" title="statement not covered" >    next(err);</span>
-  }
-};
+// Get all symptoms
+<span class="cstat-no" title="statement not covered" >router.get('/symptoms', medicalController.getAllSymptoms);</span>
 &nbsp;
-<span class="cstat-no" title="statement not covered" >exports.createOrder = <span class="fstat-no" title="function not covered" >as</span>ync (req, res, next) =&gt; {</span>
-<span class="cstat-no" title="statement not covered" >  try {</span>
-    const { tests = <span class="branch-0 cbranch-no" title="branch not covered" >[],</span> totalAmount = <span class="branch-0 cbranch-no" title="branch not covered" >0,</span> appointmentDate = <span class="branch-0 cbranch-no" title="branch not covered" >null,</span> appointmentTime = <span class="branch-0 cbranch-no" title="branch not covered" >null </span>} = <span class="cstat-no" title="statement not covered" >req.body || {};</span>
-<span class="cstat-no" title="statement not covered" >    if (!Array.isArray(tests) || tests.length === 0) <span class="cstat-no" title="statement not covered" >return res.status(400).json({ error: 'tests required' });</span></span>
+// Get specific symptom details
+<span class="cstat-no" title="statement not covered" >router.get('/symptoms/:symptomName', medicalController.getSymptomDetails);</span>
 &nbsp;
-    const order = <span class="cstat-no" title="statement not covered" >{</span>
-      id: `ORD-${nanoid(6).toUpperCase()}`,
-      tests,
-      totalAmount: Number(totalAmount || 0),
-      date: new Date().toISOString().slice(0, 10),
-      status: 'IN_PROCESS',
-      appointmentDate,
-      appointmentTime,
-    };
+// Add new symptom (admin only)
+<span class="cstat-no" title="statement not covered" >router.post('/symptoms', medicalController.addSymptom);</span>
 &nbsp;
-<span class="cstat-no" title="statement not covered" >    dbCreateOrder(order);</span>
-<span class="cstat-no" title="statement not covered" >    res.status(201).json(order);</span>
-  } catch (err) {
-<span class="cstat-no" title="statement not covered" >    next(err);</span>
-  }
-};</pre></td></tr></table></pre>
+// Update symptom (admin only)
+<span class="cstat-no" title="statement not covered" >router.put('/symptoms/:symptomName', medicalController.updateSymptom);</span>
+&nbsp;
+// Delete symptom (admin only)
+<span class="cstat-no" title="statement not covered" >router.delete('/symptoms/:symptomName', medicalController.deleteSymptom);</span>
+&nbsp;
+// Search symptoms by keyword
+<span class="cstat-no" title="statement not covered" >router.get('/search', medicalController.searchSymptoms);</span>
+&nbsp;
+// AI-powered symptom analysis
+<span class="cstat-no" title="statement not covered" >router.post('/analyze', medicalController.analyzeSymptoms);</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >module.exports = router;</span>
+&nbsp;</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
             </div><!-- /wrapper -->
