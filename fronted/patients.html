@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patients - LabDash</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Include Sidebar (same as dashboard) -->
+    <div class="sidebar">
+        <!-- Same sidebar code -->
+    </div>
+
+    <div class="main-content">
+        <header class="top-header">
+            <!-- Same header code -->
+        </header>
+
+        <div class="dashboard-content">
+            <div class="page-header">
+                <h2>Patient Management</h2>
+                <button class="btn-primary" onclick="openModal('addPatient')">
+                    <i class="fas fa-plus"></i> Add Patient
+                </button>
+            </div>
+
+            <!-- Filters -->
+            <div class="filters-bar">
+                <div class="filter-group">
+                    <input type="text" placeholder="Search by name or ID..." id="searchPatient">
+                </div>
+                <div class="filter-group">
+                    <select id="filterGender">
+                        <option value="">All Gender</option>
+                        <option value="male">Male</option>
+                        <option value="female">Female</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <input type="date" id="filterDate">
+                </div>
+                <button class="btn-secondary" onclick="applyFilters()">
+                    <i class="fas fa-filter"></i> Apply
+                </button>
+            </div>
+
+            <!-- Patients Table -->
+            <div class="table-container">
+                <table class="data-table" id="patientsTable">
+                    <thead>
+                        <tr>
+                            <th>Patient ID</th>
+                            <th>Name</th>
+                            <th>Age</th>
+                            <th>Gender</th>
+                            <th>Phone</th>
+                            <th>Tests</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Data will be loaded dynamically -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination -->
+            <div class="pagination">
+                <button class="page-btn" onclick="prevPage()">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                <span id="pageInfo">Page 1 of 10</span>
+                <button class="page-btn" onclick="nextPage()">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/app.js"></script>
+</body>
+</html>
