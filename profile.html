@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile - LabDash</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .profile-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            color: #333;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .header h1 i {
+            color: #667eea;
+        }
+
+        .btn-home {
+            padding: 12px 24px;
+            background: #667eea;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .btn-home:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+        }
+
+        .profile-grid {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 20px;
+        }
+
+        .profile-sidebar {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            height: fit-content;
+        }
+
+        .profile-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            color: white;
+            font-weight: bold;
+        }
+
+        .profile-name {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .profile-name h2 {
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .profile-name p {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .profile-stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-top: 25px;
+        }
+
+        .stat-card {
+            text-align: center;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+
+        .stat-card h3 {
+            color: #667eea;
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+
+        .stat-card p {
+            color: #666;
+            font-size: 13px;
+        }
+
+        .profile-actions {
+            margin-top: 25px;
+        }
+
+        .profile-actions button {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-bottom: 10px;
+            transition: all 0.3s;
+        }
+
+        .btn-logout {
+            background: #ef4444;
+            color: white;
+        }
+
+        .btn-logout:hover {
+            background: #dc2626;
+        }
+
+        .profile-main {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        .tab-btn {
+            padding: 12px 24px;
+            border: none;
+            background: none;
+            cursor: pointer;
+            font-weight: 600;
+            color: #666;
+            position: relative;
+            transition: all 0.3s;
+        }
+
+        .tab-btn.active {
+            color: #667eea;
+        }
+
+        .tab-btn.active::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: #667eea;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .info-item {
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+
+        .info-item label {
+            display: block;
+            color: #666;
+            font-size: 13px;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .info-item p {
+            color: #333;
+            font-size: 16px;
+            font-weight: 500;
+        }
+
+        .order-card {
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .order-info h3 {
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .order-info p {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .order-status {
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status-completed {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-cancelled {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #999;
+        }
+
+        .empty-state i {
+            font-size: 64px;
+            margin-bottom: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .profile-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="profile-container">
+        <div class="header">
+            <h1>
+                <i class="fas fa-user-circle"></i>
+                My Profile
+            </h1>
+            <a href="index.html" class="btn-home">
+                <i class="fas fa-home"></i> Back to Home
+            </a>
+        </div>
+
+        <div class="profile-grid">
+            <div class="profile-sidebar">
+                <div class="profile-avatar" id="userAvatar">
+                    ?
+                </div>
+                <div class="profile-name">
+                    <h2 id="userName">Loading...</h2>
+                    <p id="userEmail">Loading...</p>
+                </div>
+
+                <div class="profile-stats">
+                    <div class="stat-card">
+                        <h3 id="totalOrders">0</h3>
+                        <p>Total Orders</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3 id="totalSpent">₹0</h3>
+                        <p>Total Spent</p>
+                    </div>
+                </div>
+
+                <div class="profile-actions">
+                    <button class="btn-logout" onclick="logout()">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </button>
+                </div>
+            </div>
+
+            <div class="profile-main">
+                <div class="tabs">
+                    <button class="tab-btn active" onclick="switchTab('info')">
+                        <i class="fas fa-info-circle"></i> Personal Info
+                    </button>
+                    <button class="tab-btn" onclick="switchTab('orders')">
+                        <i class="fas fa-shopping-bag"></i> My Orders
+                    </button>
+                    <button class="tab-btn" onclick="switchTab('tests')">
+                        <i class="fas fa-flask"></i> Lab Tests
+                    </button>
+                    <button class="tab-btn" onclick="switchTab('settings')">
+                        <i class="fas fa-cog"></i> Settings
+                    </button>
+                </div>
+
+                <!-- Personal Info Tab -->
+                <div id="infoTab" class="tab-content active">
+                    <h2 style="margin-bottom: 20px; color: #333;">Personal Information</h2>
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <label>Full Name</label>
+                            <p id="infoName">Loading...</p>
+                        </div>
+                        <div class="info-item">
+                            <label>Email Address</label>
+                            <p id="infoEmail">Loading...</p>
+                        </div>
+                        <div class="info-item">
+                            <label>Phone Number</label>
+                            <p id="infoPhone">Not provided</p>
+                        </div>
+                        <div class="info-item">
+                            <label>Member Since</label>
+                            <p id="memberSince">Loading...</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Orders Tab -->
+                <div id="ordersTab" class="tab-content">
+                    <h2 style="margin-bottom: 20px; color: #333;">Order History</h2>
+                    <div id="ordersList">
+                        <div class="empty-state">
+                            <i class="fas fa-shopping-cart"></i>
+                            <h3>No orders yet</h3>
+                            <p>Your order history will appear here</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Lab Tests Tab -->
+                <div id="testsTab" class="tab-content">
+                    <h2 style="margin-bottom: 20px; color: #333;">My Lab Tests</h2>
+                    <div id="testsList">
+                        <div class="empty-state">
+                            <i class="fas fa-flask"></i>
+                            <h3>No lab tests yet</h3>
+                            <p>Your lab test reports will appear here</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Settings Tab -->
+                <div id="settingsTab" class="tab-content">
+                    <h2 style="margin-bottom: 20px; color: #333;">Account Settings</h2>
+                    <div class="info-item">
+                        <label>Change Password</label>
+                        <p style="color: #667eea; cursor: pointer;">Update your password</p>
+                    </div>
+                    <div class="info-item">
+                        <label>Email Notifications</label>
+                        <p>Enabled</p>
+                    </div>
+                    <div class="info-item">
+                        <label>SMS Notifications</label>
+                        <p>Enabled</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Check authentication
+        window.addEventListener('load', async () => {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                alert('Please login to access your profile');
+                window.location.href = 'login.html';
+                return;
+            }
+
+            await loadUserProfile();
+        });
+
+        // Load user profile
+        async function loadUserProfile() {
+            try {
+                const token = localStorage.getItem('token');
+                const user = JSON.parse(localStorage.getItem('user') || '{}');
+
+                // Display user info
+                document.getElementById('userName').textContent = user.name || 'User';
+                document.getElementById('userEmail').textContent = user.email || '';
+                document.getElementById('userAvatar').textContent = (user.name || 'U')[0].toUpperCase();
+                
+                document.getElementById('infoName').textContent = user.name || 'Not provided';
+                document.getElementById('infoEmail').textContent = user.email || 'Not provided';
+                document.getElementById('infoPhone').textContent = user.phone || 'Not provided';
+                
+                // Format date
+                if (user.created_at) {
+                    const date = new Date(user.created_at);
+                    document.getElementById('memberSince').textContent = date.toLocaleDateString('en-IN', {
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric'
+                    });
+                }
+
+                // TODO: Load orders and tests from API
+                // For now showing mock data
+                document.getElementById('totalOrders').textContent = '0';
+                document.getElementById('totalSpent').textContent = '₹0';
+
+            } catch (error) {
+                console.error('Error loading profile:', error);
+            }
+        }
+
+        // Switch tabs
+        function switchTab(tabName) {
+            // Remove active class from all tabs
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+
+            // Add active class to selected tab
+            event.target.classList.add('active');
+            document.getElementById(tabName + 'Tab').classList.add('active');
+        }
+
+        // Logout
+        function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                localStorage.removeItem('token');
+                localStorage.removeItem('user');
+                window.location.href = 'login.html';
+            }
+        }
+    </script>
+</body>
+</html>
