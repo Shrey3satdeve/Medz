@@ -1,0 +1,1638 @@
+package com.example.labdash
+
+import android.os.Bundle
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
+import androidx.compose.material3.Badge
+import androidx.compose.material3.BadgedBox
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.RadioButton
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Tab
+import androidx.compose.material3.TabRow
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.lightColorScheme
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.draw.scale
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.labdash.viewmodel.HomeViewModel
+import com.example.labdash.viewmodel.OrdersViewModel
+import kotlinx.coroutines.delay
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Locale
+
+// THEME
+@Composable
+fun LabDashTheme(content: @Composable () -> Unit) {
+    val colorScheme = lightColorScheme(
+        primary = Color(0xFF3B82F6),
+        secondary = Color(0xFF10B981),
+        tertiary = Color(0xFF8B5CF6),
+        background = Color(0xFFF9FAFB),
+        surface = Color.White,
+        onPrimary = Color.White,
+        onSecondary = Color.White,
+        onBackground = Color(0xFF1F2937),
+        onSurface = Color(0xFF1F2937),
+    )
+    MaterialTheme(colorScheme = colorScheme, content = content)
+}
+
+val GradientBlueGreen = Brush.horizontalGradient(
+    colors = listOf(Color(0xFF3B82F6), Color(0xFF10B981))
+)
+
+@Composable
+fun HorizontalDivider(
+    modifier: Modifier = Modifier,
+    color: Color = Color(0xFFE5E7EB),
+    thickness: Dp = 1.dp
+) {
+    Box(modifier = modifier.fillMaxWidth().height(thickness).background(color))
+}
+
+@Composable
+fun DeterminateProgress(
+    progress: Float,
+    modifier: Modifier = Modifier,
+    trackColor: Color = Color(0xFFE5E7EB),
+    indicatorColor: Color = Color(0xFF3B82F6),
+    height: Dp = 6.dp
+) {
+    val p = progress.coerceIn(0f, 1f)
+    Box(
+        modifier = modifier
+            .fillMaxWidth()
+            .height(height)
+            .background(trackColor, RoundedCornerShape(50))
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxHeight()
+                .fillMaxWidth(p)
+                .background(indicatorColor, RoundedCornerShape(50))
+        )
+    }
+}
+
+// DATA
+data class BloodTest(
+    val id: String,
+    val name: String,
+    val description: String,
+    val price: Int,
+    val originalPrice: Int? = null,
+    val category: String,
+    val parameters: Int,
+    val reportTime: String,
+    val fasting: Boolean = false
+)
+
+data class HealthPackage(
+    val id: String,
+    val name: String,
+    val description: String,
+    val price: Int,
+    val originalPrice: Int,
+    val testsCount: Int,
+    val parameters: Int,
+    val reportTime: String,
+    val popular: Boolean = false,
+    val featured: Boolean = false
+)
+
+data class CartItem(val test: BloodTest, val quantity: Int)
+
+data class Order(
+    val id: String,
+    val tests: List<BloodTest>,
+    val totalAmount: Int,
+    val date: String,
+    val status: OrderStatus,
+    val appointmentDate: String? = null,
+    val appointmentTime: String? = null
+)
+
+enum class OrderStatus { SAMPLE_COLLECTED, IN_PROCESS, REPORT_READY }
+
+enum class Screen { SPLASH, LOGIN, HOME, TEST_DETAILS, CART, APPOINTMENT, TRACKING, PROFILE, PACKAGES, SEARCH }
+
+// SAMPLE DATA (fallbacks)
+object SampleData {
+    val tests = listOf(
+        BloodTest("1","Complete Blood Count (CBC)","Comprehensive blood analysis including RBC, WBC, platelets",399,599,"routine",28,"6 hours"),
+        BloodTest("2","Thyroid Profile","Measures TSH, T3, T4 levels",699,999,"thyroid",3,"24 hours"),
+        BloodTest("3","HbA1c (Diabetes)","Average blood sugar over 3 months",499,null,"diabetes",1,"12 hours", fasting = true),
+        BloodTest("4","Lipid Profile","Cholesterol and triglyceride levels",599,null,"heart",8,"12 hours", fasting = true),
+        BloodTest("5","Liver Function Test","Assess liver health",549,799,"liver",12,"18 hours"),
+        BloodTest("6","Vitamin D","Vitamin D levels in blood",899,null,"vitamin",1,"24 hours"),
+        BloodTest("7","Kidney Function Test","Creatinine, urea, uric acid",599,849,"kidney",10,"18 hours"),
+        BloodTest("8","Iron Studies","Serum iron, TIBC, ferritin",799,1099,"iron",4,"24 hours", fasting = true),
+    )
+
+    val packages = listOf(
+        HealthPackage("pkg1","Essential Health Checkup","Basic screening package",999,1999,5,59,"24 hours", popular = true, featured = true),
+        HealthPackage("pkg2","Diabetes Care Package","Comprehensive diabetes monitoring",1499,2499,7,32,"24 hours", popular = true, featured = true),
+        HealthPackage("pkg3","Heart Health Package","Complete cardiovascular assessment",1799,2999,8,45,"24 hours", popular = false, featured = true),
+        HealthPackage("pkg4","Women's Health Package","Designed for women's health",2499,3999,8,48,"48 hours", popular = true, featured = true),
+    )
+
+    fun getSampleOrders(): List<Order> = listOf(
+        Order("ORD-001", listOf(tests[0]), 399, "2025-10-28", OrderStatus.REPORT_READY, "2025-10-28", "08:00 AM"),
+        Order("ORD-002", listOf(tests[3]), 599, "2025-10-29", OrderStatus.IN_PROCESS, "2025-10-29", "09:00 AM")
+    )
+}
+
+data class Category(val name: String, val icon: ImageVector, val color: Color)
+
+// ACTIVITY
+class MainActivity : ComponentActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContent { LabDashTheme { LabDashApp() } }
+    }
+}
+
+// APP ROOT
+@Composable
+fun LabDashApp() {
+    var currentScreen by remember { mutableStateOf(Screen.SPLASH) }
+    var selectedTest by remember { mutableStateOf<BloodTest?>(null) }
+    var cart by remember { mutableStateOf<List<CartItem>>(emptyList()) }
+    var searchQuery by remember { mutableStateOf("") }
+
+    // ViewModels
+    val homeVm: HomeViewModel = viewModel()
+    val ordersVm: OrdersViewModel = viewModel()
+
+    LaunchedEffect(Unit) {
+        homeVm.load()
+        ordersVm.loadOrders()
+    }
+
+    // Splash -> Login
+    LaunchedEffect(Unit) {
+        if (currentScreen == Screen.SPLASH) {
+            delay(1200)
+            currentScreen = Screen.LOGIN
+        }
+    }
+
+    when (currentScreen) {
+        Screen.SPLASH -> AppSplashScreen()
+        Screen.LOGIN -> LoginScreen(onLogin = { currentScreen = Screen.HOME })
+
+        Screen.HOME -> HomeDashboard(
+            cartCount = cart.sumOf { it.quantity },
+            onNavigate = { next -> currentScreen = next },
+            onTestClick = { test -> selectedTest = test; currentScreen = Screen.TEST_DETAILS },
+            onSearchClick = { currentScreen = Screen.SEARCH },
+            packages = homeVm.packages,
+            packagesLoading = homeVm.isLoading,
+            packagesError = homeVm.error,
+            tests = homeVm.tests
+        )
+
+        Screen.TEST_DETAILS -> selectedTest?.let { test ->
+            TestDetailsScreen(
+                test = test,
+                cartCount = cart.sumOf { it.quantity },
+                onBack = { currentScreen = Screen.HOME },
+                onAddToCart = { cart = addToCart(cart, test) },
+                onCartClick = { currentScreen = Screen.CART }
+            )
+        }
+
+        Screen.CART -> CartScreen(
+            cart = cart,
+            onBack = { currentScreen = Screen.HOME },
+            onUpdateQuantity = { testId, q -> cart = updateCartQuantity(cart, testId, q) },
+            onRemoveItem = { testId -> cart = cart.filter { it.test.id != testId } },
+            onCheckout = { date, time ->
+                ordersVm.createOrderApi(
+                    cart = cart,
+                    appointmentDate = date,
+                    appointmentTime = time,
+                    onSuccess = {
+                        cart = emptyList()
+                        ordersVm.loadOrders()
+                        currentScreen = Screen.TRACKING
+                    },
+                    onError = { /* TODO: show snack bar/toast */ }
+                )
+            }
+        )
+
+        Screen.APPOINTMENT -> AppointmentScreen(
+            onBack = { currentScreen = Screen.TRACKING },
+            onSchedule = { currentScreen = Screen.TRACKING }
+        )
+
+        Screen.TRACKING -> OrderTrackingScreen(
+            orders = ordersVm.orders,
+            onNavigate = { next -> currentScreen = next }
+        )
+
+        Screen.PROFILE -> ProfileScreen(
+            orders = ordersVm.orders,
+            onNavigate = { next -> currentScreen = next }
+        )
+
+        Screen.PACKAGES -> PackagesScreen(onBack = { currentScreen = Screen.HOME })
+
+        Screen.SEARCH -> SearchScreen(
+            query = searchQuery,
+            onQueryChange = { searchQuery = it },
+            onTestClick = { test -> selectedTest = test; currentScreen = Screen.TEST_DETAILS },
+            onClose = { currentScreen = Screen.HOME }
+        )
+    }
+}
+
+// SPLASH
+@Composable
+fun AppSplashScreen() {
+    val infinite = rememberInfiniteTransition()
+    val rotation by infinite.animateFloat(
+        initialValue = 0f,
+        targetValue = 360f,
+        animationSpec = infiniteRepeatable(tween(2000, easing = LinearEasing))
+    )
+    val scale by infinite.animateFloat(
+        initialValue = 1f,
+        targetValue = 1.1f,
+        animationSpec = infiniteRepeatable(tween(1000, easing = FastOutSlowInEasing), RepeatMode.Reverse)
+    )
+
+    Box(Modifier.fillMaxSize().background(GradientBlueGreen), contentAlignment = Alignment.Center) {
+        Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(16.dp)) {
+            Box(
+                Modifier
+                    .size(96.dp)
+                    .scale(scale)
+                    .rotate(rotation)
+                    .background(GradientBlueGreen, RoundedCornerShape(24.dp)),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(Icons.Filled.Favorite, contentDescription = "Logo", tint = Color.White, modifier = Modifier.size(56.dp))
+            }
+            Text("LabDash", fontSize = 32.sp, fontWeight = FontWeight.Bold, color = Color.White)
+            Text("Your Health, Our Priority", fontSize = 16.sp, color = Color.White.copy(0.9f))
+        }
+    }
+}
+
+// LOGIN
+@Composable
+fun LoginScreen(onLogin: () -> Unit) {
+    var selectedTab by remember { mutableStateOf(0) }
+    var email by remember { mutableStateOf("") }
+    var phone by remember { mutableStateOf("") }
+
+    Box(Modifier.fillMaxSize().background(GradientBlueGreen)) {
+        Column(
+            Modifier
+                .fillMaxSize()
+                .padding(24.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            Box(Modifier.size(80.dp).background(Color.White.copy(0.2f), RoundedCornerShape(20.dp)), contentAlignment = Alignment.Center) {
+                Icon(Icons.Filled.Favorite, "Logo", tint = Color.White, modifier = Modifier.size(48.dp))
+            }
+            Spacer(Modifier.height(24.dp))
+            Text("Welcome to LabDash", fontSize = 28.sp, fontWeight = FontWeight.Bold, color = Color.White)
+            Text("Sign in to continue", fontSize = 16.sp, color = Color.White.copy(0.9f))
+            Spacer(Modifier.height(32.dp))
+
+            Card(Modifier.fillMaxWidth(), shape = RoundedCornerShape(16.dp), colors = CardDefaults.cardColors(containerColor = Color.White)) {
+                Column(Modifier.padding(24.dp)) {
+                    TabRow(selectedTabIndex = selectedTab) {
+                        Tab(selected = selectedTab == 0, onClick = { selectedTab = 0 }, text = { Text("Email") })
+                        Tab(selected = selectedTab == 1, onClick = { selectedTab = 1 }, text = { Text("Phone") })
+                    }
+                    Spacer(Modifier.height(24.dp))
+                    if (selectedTab == 0) {
+                        OutlinedTextField(
+                            value = email,
+                            onValueChange = { email = it },
+                            label = { Text("Email Address") },
+                            leadingIcon = { Icon(Icons.Filled.Email, "Email") },
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                    } else {
+                        OutlinedTextField(
+                            value = phone,
+                            onValueChange = { phone = it },
+                            label = { Text("Phone Number") },
+                            leadingIcon = { Icon(Icons.Filled.Phone, "Phone") },
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                    }
+                    Spacer(Modifier.height(16.dp))
+                    Button(
+                        onClick = onLogin,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(50.dp),
+                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF3B82F6))
+                    ) {
+                        Text(if (selectedTab == 0) "Continue with Email" else "Continue with Phone")
+                    }
+                    Spacer(Modifier.height(16.dp))
+                    Text("or", modifier = Modifier.align(Alignment.CenterHorizontally), color = Color.Gray)
+                    Spacer(Modifier.height(16.dp))
+                    OutlinedButton(onClick = onLogin, modifier = Modifier.fillMaxWidth().height(50.dp)) {
+                        Icon(Icons.Filled.Star, "Google", modifier = Modifier.size(20.dp))
+                        Spacer(Modifier.width(8.dp))
+                        Text("Continue with Google")
+                    }
+                }
+            }
+
+            Spacer(Modifier.height(16.dp))
+            Text(
+                "By continuing, you agree to our Terms & Privacy Policy",
+                fontSize = 12.sp, color = Color.White.copy(0.8f), textAlign = TextAlign.Center
+            )
+        }
+    }
+}
+
+// HOME (server data support)
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun HomeDashboard(
+    cartCount: Int,
+    onNavigate: (Screen) -> Unit,
+    onTestClick: (BloodTest) -> Unit,
+    onSearchClick: () -> Unit,
+    packages: List<HealthPackage>,
+    packagesLoading: Boolean,
+    packagesError: String?,
+    tests: List<BloodTest>
+) {
+    Scaffold(bottomBar = { BottomNavigationBar(Screen.HOME, onNavigate) }) { padding ->
+        LazyColumn(Modifier.fillMaxSize().padding(padding)) {
+
+            // Header
+            item {
+                Box(Modifier.fillMaxWidth().background(GradientBlueGreen).padding(24.dp)) {
+                    Column {
+                        Row(
+                            Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Box(Modifier.size(48.dp).background(Color.White.copy(0.2f), CircleShape), contentAlignment = Alignment.Center) {
+                                    Text("S", color = Color.White, fontSize = 20.sp, fontWeight = FontWeight.Bold)
+                                }
+                                Spacer(Modifier.width(12.dp))
+                                Column {
+                                    Text("Welcome back,", color = Color.White.copy(0.9f), fontSize = 14.sp)
+                                    Text("Shreyash", color = Color.White, fontSize = 20.sp, fontWeight = FontWeight.SemiBold)
+                                }
+                            }
+                            Row {
+                                IconButton(onClick = { onNavigate(Screen.CART) }) {
+                                    BadgedBox(badge = { if (cartCount > 0) Badge { Text("$cartCount") } }) {
+                                        Icon(Icons.Filled.ShoppingCart, "Cart", tint = Color.White)
+                                    }
+                                }
+                                IconButton(onClick = { onNavigate(Screen.PROFILE) }) {
+                                    Icon(Icons.Filled.Person, "Profile", tint = Color.White)
+                                }
+                            }
+                        }
+                        Spacer(Modifier.height(16.dp))
+                        Card(
+                            Modifier.fillMaxWidth().clickable(onClick = onSearchClick),
+                            colors = CardDefaults.cardColors(containerColor = Color.White)
+                        ) {
+                            Row(Modifier.fillMaxWidth().padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
+                                Icon(Icons.Filled.Search, "Search", tint = Color.Gray)
+                                Spacer(Modifier.width(12.dp))
+                                Text("Search for tests...", color = Color.Gray)
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Offer card
+            item {
+                Card(
+                    Modifier.fillMaxWidth().padding(16.dp),
+                    colors = CardDefaults.cardColors(containerColor = Color(0xFF10B981))
+                ) {
+                    Row(Modifier.padding(16.dp), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
+                        Column {
+                            Text("Limited Offer", color = Color.White, fontSize = 12.sp)
+                            Text("Get 40% OFF", color = Color.White, fontSize = 24.sp, fontWeight = FontWeight.Bold)
+                            Text("On all health packages", color = Color.White.copy(0.9f), fontSize = 14.sp)
+                            Spacer(Modifier.height(8.dp))
+                            Button(onClick = { onNavigate(Screen.PACKAGES) }, colors = ButtonDefaults.buttonColors(containerColor = Color.White)) {
+                                Text("Book Now", color = Color(0xFF10B981))
+                            }
+                        }
+                        Icon(Icons.Filled.Favorite, "Offer", modifier = Modifier.size(80.dp), tint = Color.White.copy(0.2f))
+                    }
+                }
+            }
+
+            // Categories
+            item {
+                Text("Categories", fontSize = 20.sp, fontWeight = FontWeight.SemiBold, modifier = Modifier.padding(16.dp))
+                LazyRow(contentPadding = PaddingValues(horizontal = 16.dp)) {
+                    items(
+                        listOf(
+                            Category("Routine", Icons.Filled.Favorite, Color(0xFF3B82F6)),
+                            Category("Packages", Icons.Filled.ShoppingCart, Color(0xFF6366F1))
+                        )
+                    ) { category ->
+                        CategoryCard(category) { if (category.name == "Packages") onNavigate(Screen.PACKAGES) }
+                        Spacer(Modifier.width(12.dp))
+                    }
+                }
+            }
+
+            // Featured Packages — server data
+            item {
+                Spacer(Modifier.height(16.dp))
+                Row(
+                    Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text("Featured Packages", fontSize = 20.sp, fontWeight = FontWeight.SemiBold)
+                    TextButton(onClick = { onNavigate(Screen.PACKAGES) }) { Text("View All") }
+                }
+                when {
+                    packagesLoading -> {
+                        Box(Modifier.fillMaxWidth().padding(16.dp), contentAlignment = Alignment.Center) {
+                            CircularProgressIndicator()
+                        }
+                    }
+                    packagesError != null -> {
+                        Text(packagesError, color = Color.Red, modifier = Modifier.padding(horizontal = 16.dp))
+                    }
+                    else -> {
+                        val list = packages.ifEmpty { SampleData.packages }
+                        LazyRow(contentPadding = PaddingValues(horizontal = 16.dp)) {
+                            items(list.take(3)) { pkg ->
+                                PackageCard(pkg)
+                                Spacer(Modifier.width(12.dp))
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Popular Tests — server data
+            item {
+                Spacer(Modifier.height(16.dp))
+                Row(Modifier.fillMaxWidth().padding(horizontal = 16.dp), horizontalArrangement = Arrangement.SpaceBetween) {
+                    Text("Popular Tests", fontSize = 20.sp, fontWeight = FontWeight.SemiBold)
+                    TextButton(onClick = { /* TODO show all */ }) { Text("View All") }
+                }
+            }
+            val testList = tests.ifEmpty { SampleData.tests }
+            items(testList.take(6)) { test -> TestCard(test, onClick = onTestClick) }
+
+            item { Spacer(Modifier.height(80.dp)) }
+        }
+    }
+}
+
+@Composable
+fun CategoryCard(category: Category, onClick: () -> Unit) {
+    Column(
+        modifier = Modifier.width(80.dp).clickable(onClick = onClick),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Box(Modifier.size(64.dp).background(category.color.copy(alpha = 0.1f), CircleShape), contentAlignment = Alignment.Center) {
+            Icon(category.icon, contentDescription = category.name, tint = category.color, modifier = Modifier.size(32.dp))
+        }
+        Spacer(Modifier.height(8.dp))
+        Text(category.name, fontSize = 12.sp, fontWeight = FontWeight.Medium, textAlign = TextAlign.Center)
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun PackageCard(pkg: HealthPackage) {
+    Card(Modifier.width(280.dp), colors = CardDefaults.cardColors(containerColor = Color(0xFFEFF6FF))) {
+        Column(Modifier.padding(16.dp)) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Icon(Icons.Filled.ShoppingCart, "Package", tint = Color(0xFF3B82F6))
+                Spacer(Modifier.width(8.dp))
+                if (pkg.popular) Badge(containerColor = Color(0xFF10B981)) { Text("Popular", fontSize = 10.sp, color = Color.White) }
+            }
+            Spacer(Modifier.height(8.dp))
+            Text(pkg.name, fontSize = 16.sp, fontWeight = FontWeight.SemiBold)
+            Text(pkg.description, fontSize = 14.sp, color = Color.Gray, maxLines = 2, overflow = TextOverflow.Ellipsis)
+            Spacer(Modifier.height(8.dp))
+            Row {
+                Text("${pkg.parameters} params", fontSize = 12.sp, color = Color.Gray)
+                Spacer(Modifier.width(12.dp))
+                Text("${pkg.testsCount} tests", fontSize = 12.sp, color = Color.Gray)
+            }
+            Spacer(Modifier.height(12.dp))
+            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
+                Column {
+                    Text("₹${pkg.price}", fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                    Text("₹${pkg.originalPrice}", fontSize = 14.sp, color = Color.Gray, textDecoration = TextDecoration.LineThrough)
+                }
+                Button(onClick = { /* TODO */ }, colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF3B82F6))) { Text("View") }
+            }
+        }
+    }
+}
+
+// TEST DETAILS
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun TestDetailsScreen(
+    test: BloodTest,
+    cartCount: Int,
+    onBack: () -> Unit,
+    onAddToCart: () -> Unit,
+    onCartClick: () -> Unit
+) {
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text("Test Details") },
+                navigationIcon = { IconButton(onClick = onBack) { Icon(Icons.Filled.ArrowBack, "Back") } },
+                actions = {
+                    IconButton(onClick = onCartClick) {
+                        BadgedBox(badge = { if (cartCount > 0) Badge { Text("$cartCount") } }) {
+                            Icon(Icons.Filled.ShoppingCart, "Cart")
+                        }
+                    }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = Color(0xFF3B82F6),
+                    titleContentColor = Color.White,
+                    navigationIconContentColor = Color.White,
+                    actionIconContentColor = Color.White
+                )
+            )
+        },
+        bottomBar = {
+            Surface(shadowElevation = 8.dp, color = Color.White) {
+                Row(Modifier.fillMaxWidth().padding(16.dp), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
+                    Column { Text("Total Amount", color = Color.Gray); Text("₹${test.price}", fontSize = 20.sp, fontWeight = FontWeight.Bold) }
+                    Button(onClick = onAddToCart, colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF3B82F6))) {
+                        Icon(Icons.Filled.ShoppingCart, "Add", modifier = Modifier.size(20.dp))
+                        Spacer(Modifier.width(8.dp))
+                        Text("Add to Cart")
+                    }
+                }
+            }
+        }
+    ) { padding ->
+        LazyColumn(Modifier.fillMaxSize().padding(padding)) {
+            item {
+                Card(Modifier.fillMaxWidth().padding(16.dp)) {
+                    Column(Modifier.padding(16.dp)) {
+                        Text(test.name, fontSize = 24.sp, fontWeight = FontWeight.Bold)
+                        Spacer(Modifier.height(8.dp))
+                        Text(test.description, fontSize = 16.sp, color = Color.Gray)
+                        test.originalPrice?.let { orig ->
+                            Spacer(Modifier.height(12.dp))
+                            val save = orig - test.price
+                            val pct = (save * 100 / orig)
+                            Badge(containerColor = Color(0xFF10B981)) { Text("Save ₹$save ($pct% OFF)", color = Color.White) }
+                        }
+                        Spacer(Modifier.height(16.dp))
+                        HorizontalDivider()
+                        Spacer(Modifier.height(16.dp))
+                        Row(horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier.fillMaxWidth()) {
+                            Column {
+                                Text("Test Price", color = Color.Gray)
+                                Row {
+                                    Text("₹${test.price}", fontSize = 20.sp, fontWeight = FontWeight.Bold)
+                                    test.originalPrice?.let {
+                                        Spacer(Modifier.width(8.dp))
+                                        Text("₹$it", color = Color.Gray, textDecoration = TextDecoration.LineThrough)
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            item {
+                Card(Modifier.fillMaxWidth().padding(16.dp)) {
+                    Column(Modifier.padding(16.dp)) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Icon(Icons.Filled.Info, "Info", tint = Color(0xFF3B82F6))
+                            Spacer(Modifier.width(8.dp))
+                            Text("Test Information", fontSize = 18.sp, fontWeight = FontWeight.SemiBold)
+                        }
+                        Spacer(Modifier.height(16.dp))
+                        InfoRow("Parameters", "${test.parameters} parameters", Icons.Filled.List)
+                        Spacer(Modifier.height(12.dp))
+                        InfoRow("Report Time", test.reportTime, Icons.Filled.DateRange)
+                    }
+                }
+            }
+            if (test.fasting) {
+                item {
+                    Card(Modifier.fillMaxWidth().padding(16.dp), colors = CardDefaults.cardColors(containerColor = Color(0xFFFEF3C7))) {
+                        Row(Modifier.padding(16.dp), verticalAlignment = Alignment.Top) {
+                            Icon(Icons.Filled.Warning, "Warning", tint = Color(0xFFF59E0B))
+                            Spacer(Modifier.width(12.dp))
+                            Column {
+                                Text("Fasting Required", fontWeight = FontWeight.SemiBold)
+                                Text("This test requires 8-12 hours of fasting. You can drink water but avoid food and other beverages.", fontSize = 14.sp, color = Color.Gray)
+                            }
+                        }
+                    }
+                }
+            }
+            item {
+                Card(Modifier.fillMaxWidth().padding(16.dp)) {
+                    Column(Modifier.padding(16.dp)) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Icon(
+                                Icons.Filled.Check,
+                                contentDescription = "Verified",
+                                tint = Color(0xFF10B981),
+                                modifier = Modifier.size(20.dp)
+                            )
+                            Spacer(Modifier.width(8.dp))
+                        }
+                        Spacer(Modifier.height(16.dp))
+                        BulletPoint("Free home sample collection")
+                        Spacer(Modifier.height(8.dp))
+                        BulletPoint("Digital report access within ${test.reportTime}")
+                        Spacer(Modifier.height(8.dp))
+                        BulletPoint("Free doctor consultation for report interpretation")
+                        Spacer(Modifier.height(8.dp))
+                        BulletPoint("NABL certified lab testing")
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun InfoRow(label: String, value: String, icon: ImageVector) {
+    Row(verticalAlignment = Alignment.CenterVertically) {
+        Box(Modifier.size(40.dp).background(Color(0xFFEFF6FF), RoundedCornerShape(8.dp)), contentAlignment = Alignment.Center) {
+            Icon(icon, label, tint = Color(0xFF3B82F6), modifier = Modifier.size(20.dp))
+        }
+        Spacer(Modifier.width(12.dp))
+        Column {
+            Text(label, fontSize = 14.sp, color = Color.Gray)
+            Text(value, fontSize = 16.sp, fontWeight = FontWeight.Medium)
+        }
+    }
+}
+
+@Composable
+fun BulletPoint(text: String) {
+    Row(verticalAlignment = Alignment.Top) {
+        Icon(Icons.Filled.Check, "Check", tint = Color(0xFF10B981), modifier = Modifier.size(20.dp))
+        Spacer(Modifier.width(12.dp))
+        Text(text, fontSize = 14.sp)
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun TestCard(test: BloodTest, onClick: (BloodTest) -> Unit) {
+    Card(
+        Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 8.dp)
+            .clickable { onClick(test) }
+    ) {
+        Column(Modifier.padding(16.dp)) {
+            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                Column(Modifier.weight(1f)) {
+                    Text(test.name, fontSize = 16.sp, fontWeight = FontWeight.SemiBold)
+                    test.originalPrice?.let {
+                        Badge(containerColor = Color(0xFF10B981)) { Text("Save ₹${it - test.price}", fontSize = 10.sp, color = Color.White) }
+                    }
+                }
+            }
+            Spacer(Modifier.height(8.dp))
+            Text(test.description, fontSize = 14.sp, color = Color.Gray, maxLines = 2, overflow = TextOverflow.Ellipsis)
+            Spacer(Modifier.height(12.dp))
+            Row {
+                Row {
+                    Icon(Icons.Filled.List, "Params", modifier = Modifier.size(16.dp), tint = Color.Gray)
+                    Spacer(Modifier.width(4.dp))
+                    Text("${test.parameters} params", fontSize = 12.sp, color = Color.Gray)
+                }
+                Spacer(Modifier.width(16.dp))
+                Row {
+                    Icon(Icons.Filled.DateRange, "Time", modifier = Modifier.size(16.dp), tint = Color.Gray)
+                    Spacer(Modifier.width(4.dp))
+                    Text(test.reportTime, fontSize = 12.sp, color = Color.Gray)
+                }
+            }
+            Spacer(Modifier.height(12.dp))
+            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
+                Column {
+                    Text("₹${test.price}", fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                    test.originalPrice?.let {
+                        Text("₹$it", fontSize = 14.sp, color = Color.Gray, textDecoration = TextDecoration.LineThrough)
+                    }
+                }
+                Row {
+                    OutlinedButton(onClick = { onClick(test) }) { Text("View") }
+                    Spacer(Modifier.width(8.dp))
+                    Button(onClick = { /* TODO: Add to cart */ }, colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF3B82F6))) { Text("Add") }
+                }
+            }
+        }
+    }
+}
+
+// CART
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun CartScreen(
+    cart: List<CartItem>,
+    onBack: () -> Unit,
+    onUpdateQuantity: (String, Int) -> Unit,
+    onRemoveItem: (String) -> Unit,
+    onCheckout: (String?, String?) -> Unit
+) {
+    val subtotal = cart.sumOf { it.test.price * it.quantity }
+    val discount = cart.sumOf { ((it.test.originalPrice ?: it.test.price) - it.test.price) * it.quantity }
+    val total = subtotal
+
+    // Steps: 0 = Review, 1 = Schedule, 2 = Payment
+    var step by remember { mutableStateOf(0) }
+    var selectedPayment by remember { mutableStateOf("upi") }
+
+    // Scheduling (auto-select: tomorrow + first slot)
+    val timeSlots = listOf("06:00 AM","07:00 AM","08:00 AM","09:00 AM","10:00 AM","11:00 AM","12:00 PM")
+    val nextDays = remember {
+        val fmtLabel = SimpleDateFormat("dd MMM", Locale.getDefault())
+        val fmtFull = SimpleDateFormat("dd MMM yyyy", Locale.getDefault())
+        val base = Calendar.getInstance()
+        (1..7).map { offset ->
+            val c = base.clone() as Calendar
+            c.add(Calendar.DAY_OF_YEAR, offset)
+            Pair(fmtLabel.format(c.time), fmtFull.format(c.time))
+        }
+    }
+    var selectedDateLabel by remember { mutableStateOf(nextDays.first().first) }
+    var selectedDateFull by remember { mutableStateOf(nextDays.first().second) }
+    var selectedTime by remember { mutableStateOf(timeSlots.first()) }
+
+    val title = when (step) {
+        0 -> "Cart (${cart.size} items)"
+        1 -> "Schedule"
+        else -> "Payment"
+    }
+
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text(title) },
+                navigationIcon = { IconButton(onClick = { if (step > 0) step -= 1 else onBack() }) { Icon(Icons.Filled.ArrowBack, "Back") } },
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color(0xFF3B82F6), titleContentColor = Color.White, navigationIconContentColor = Color.White)
+            )
+        },
+        bottomBar = {
+            Surface(shadowElevation = 8.dp, color = Color.White) {
+                Row(Modifier.fillMaxWidth().padding(16.dp), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
+                    Column { Text(if (step == 2) "Payable Amount" else "Total Amount", color = Color.Gray); Text("₹$total", fontSize = 20.sp, fontWeight = FontWeight.Bold) }
+                    Button(
+                        onClick = {
+                            when (step) {
+                                0 -> step = 1
+                                1 -> step = 2
+                                else -> onCheckout(selectedDateFull, selectedTime)
+                            }
+                        },
+                        enabled = when (step) {
+                            1 -> selectedDateFull.isNotEmpty() && selectedTime.isNotEmpty()
+                            else -> true
+                        },
+                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF3B82F6))
+                    ) {
+                        when (step) {
+                            0 -> Text("Continue")
+                            1 -> Text("Proceed to Payment")
+                            else -> {
+                                Icon(Icons.Filled.Check, "Pay")
+                                Spacer(Modifier.width(8.dp))
+                                Text("Pay ₹$total")
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    ) { padding ->
+        if (cart.isEmpty()) {
+            Box(Modifier.fillMaxSize().padding(padding), contentAlignment = Alignment.Center) {
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    Icon(Icons.Filled.ShoppingCart, "Empty", modifier = Modifier.size(80.dp), tint = Color.Gray)
+                    Spacer(Modifier.height(16.dp))
+                    Text("Your cart is empty", fontSize = 18.sp)
+                    Spacer(Modifier.height(8.dp))
+                    Text("Add some tests to get started", color = Color.Gray)
+                    Spacer(Modifier.height(16.dp))
+                    Button(onClick = onBack) { Text("Browse Tests") }
+                }
+            }
+        } else {
+            LazyColumn(Modifier.fillMaxSize().padding(padding)) {
+                when (step) {
+                    // Step 0: Review
+                    0 -> {
+                        items(cart) { item -> CartItemCard(item, onUpdateQuantity, onRemoveItem) }
+                        item {
+                            Card(Modifier.fillMaxWidth().padding(16.dp)) {
+                                Column(Modifier.padding(16.dp)) {
+                                    Text("Price Summary", fontSize = 18.sp, fontWeight = FontWeight.SemiBold)
+                                    Spacer(Modifier.height(16.dp))
+                                    PriceRow("Subtotal", "₹$subtotal")
+                                    if (discount > 0) {
+                                        Spacer(Modifier.height(8.dp))
+                                        PriceRow("Discount", "-₹$discount", Color(0xFF10B981))
+                                    }
+                                    Spacer(Modifier.height(8.dp))
+                                    PriceRow("Home Collection", "FREE", Color(0xFF10B981))
+                                    Spacer(Modifier.height(12.dp))
+                                    HorizontalDivider()
+                                    Spacer(Modifier.height(12.dp))
+                                    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                                        Text("Total Amount", fontWeight = FontWeight.Bold, fontSize = 16.sp)
+                                        Text("₹$total", fontWeight = FontWeight.Bold, fontSize = 16.sp)
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    // Step 1: Schedule
+                    1 -> {
+                        item {
+                            Card(Modifier.fillMaxWidth().padding(16.dp)) {
+                                Column(Modifier.padding(16.dp)) {
+                                    Row(verticalAlignment = Alignment.CenterVertically) {
+                                        Icon(Icons.Filled.DateRange, "Date", tint = Color(0xFF3B82F6))
+                                        Spacer(Modifier.width(8.dp))
+                                        Text("Select Date", fontSize = 18.sp, fontWeight = FontWeight.SemiBold)
+                                    }
+                                    Spacer(Modifier.height(16.dp))
+                                    LazyRow {
+                                        items(nextDays) { (label, full) ->
+                                            DateChip(
+                                                day = label,
+                                                selected = selectedDateLabel == label,
+                                                onClick = {
+                                                    selectedDateLabel = label
+                                                    selectedDateFull = full
+                                                }
+                                            )
+                                            Spacer(Modifier.width(8.dp))
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        item {
+                            Card(Modifier.fillMaxWidth().padding(16.dp)) {
+                                Column(Modifier.padding(16.dp)) {
+                                    Row(verticalAlignment = Alignment.CenterVertically) {
+                                        Icon(Icons.Filled.DateRange, "Time", tint = Color(0xFF3B82F6))
+                                        Spacer(Modifier.width(8.dp))
+                                        Text("Select Time Slot", fontSize = 18.sp, fontWeight = FontWeight.SemiBold)
+                                    }
+                                    Spacer(Modifier.height(16.dp))
+                                    Column {
+                                        timeSlots.chunked(3).forEach { rowSlots ->
+                                            Row(Modifier.fillMaxWidth()) {
+                                                rowSlots.forEach { slot ->
+                                                    TimeChip(
+                                                        time = slot,
+                                                        selected = selectedTime == slot,
+                                                        onClick = { selectedTime = slot },
+                                                        modifier = Modifier.weight(1f)
+                                                    )
+                                                    Spacer(Modifier.width(8.dp))
+                                                }
+                                            }
+                                            Spacer(Modifier.height(8.dp))
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        item {
+                            Card(Modifier.fillMaxWidth().padding(16.dp), colors = CardDefaults.cardColors(containerColor = Color(0xFFEFF6FF))) {
+                                Column(Modifier.padding(16.dp)) {
+                                    Text("Appointment Summary", fontWeight = FontWeight.SemiBold)
+                                    Spacer(Modifier.height(8.dp))
+                                    Text("Date: $selectedDateFull")
+                                    Text("Time: $selectedTime")
+                                    Text("Type: Home Collection")
+                                }
+                            }
+                        }
+                    }
+
+                    // Step 2: Payment
+                    else -> {
+                        item {
+                            Card(Modifier.fillMaxWidth().padding(16.dp), colors = CardDefaults.cardColors(containerColor = Color(0xFFD1FAE5))) {
+                                Row(Modifier.padding(12.dp), verticalAlignment = Alignment.CenterVertically) {
+                                    Icon(Icons.Filled.Check, "Scheduled", tint = Color(0xFF10B981))
+                                    Spacer(Modifier.width(8.dp))
+                                    Text("Scheduled: $selectedDateFull at $selectedTime", color = Color(0xFF065F46))
+                                }
+                            }
+                        }
+                        item {
+                            Card(Modifier.fillMaxWidth().padding(16.dp)) {
+                                Column(Modifier.padding(16.dp)) {
+                                    Text("Select Payment Method", fontSize = 18.sp, fontWeight = FontWeight.SemiBold)
+                                    Spacer(Modifier.height(16.dp))
+                                    PaymentOption("UPI","Google Pay, PhonePe, Paytm", Icons.Filled.AccountCircle, selected = selectedPayment=="upi") { selectedPayment = "upi" }
+                                    Spacer(Modifier.height(12.dp))
+                                    PaymentOption("Credit/Debit Card","Visa, Mastercard, RuPay", Icons.Filled.AccountBox, selected = selectedPayment=="card") { selectedPayment = "card" }
+                                    Spacer(Modifier.height(12.dp))
+                                    PaymentOption("Net Banking","All major banks", Icons.Filled.Build, selected = selectedPayment=="netbanking") { selectedPayment = "netbanking" }
+                                    Spacer(Modifier.height(12.dp))
+                                    PaymentOption("Cash on Collection","Pay when sample is collected", Icons.Filled.Star, selected = selectedPayment=="cod") { selectedPayment = "cod" }
+                                }
+                            }
+                        }
+                        item {
+                            Card(Modifier.fillMaxWidth().padding(16.dp)) {
+                                Column(Modifier.padding(16.dp)) {
+                                    Text("Order Summary", fontSize = 18.sp, fontWeight = FontWeight.SemiBold)
+                                    Spacer(Modifier.height(16.dp))
+                                    cart.forEach { item ->
+                                        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                                            Text("${item.test.name} x${item.quantity}", fontSize = 14.sp)
+                                            Text("₹${item.test.price * item.quantity}", fontSize = 14.sp)
+                                        }
+                                        Spacer(Modifier.height(8.dp))
+                                    }
+                                    HorizontalDivider()
+                                    Spacer(Modifier.height(12.dp))
+                                    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                                        Text("Total Amount", fontWeight = FontWeight.Bold)
+                                        Text("₹$total", fontWeight = FontWeight.Bold)
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun PaymentOption(title: String, subtitle: String, icon: ImageVector, selected: Boolean, onClick: () -> Unit) {
+    Card(
+        Modifier.fillMaxWidth().clickable(onClick = onClick),
+        border = if (selected) BorderStroke(2.dp, Color(0xFF3B82F6)) else null,
+        colors = CardDefaults.cardColors(containerColor = if (selected) Color(0xFFEFF6FF) else Color.White)
+    ) {
+        Row(Modifier.fillMaxWidth().padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
+            RadioButton(selected = selected, onClick = onClick)
+            Spacer(Modifier.width(12.dp))
+            Box(Modifier.size(40.dp).background(Color(0xFFEFF6FF), RoundedCornerShape(8.dp)), contentAlignment = Alignment.Center) {
+                Icon(icon, title, tint = Color(0xFF3B82F6))
+            }
+            Spacer(Modifier.width(12.dp))
+            Column { Text(title, fontWeight = FontWeight.Medium); Text(subtitle, fontSize = 14.sp, color = Color.Gray) }
+        }
+    }
+}
+
+@Composable
+fun CartItemCard(item: CartItem, onUpdateQuantity: (String, Int) -> Unit, onRemove: (String) -> Unit) {
+    Card(Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp)) {
+        Column(Modifier.padding(16.dp)) {
+            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                Column(Modifier.weight(1f)) {
+                    Text(item.test.name, fontSize = 16.sp, fontWeight = FontWeight.SemiBold)
+                    Text(item.test.description, fontSize = 14.sp, color = Color.Gray, maxLines = 2)
+                }
+                IconButton(onClick = { onRemove(item.test.id) }) { Icon(Icons.Filled.Delete, "Remove", tint = Color.Red) }
+            }
+            Spacer(Modifier.height(12.dp))
+            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
+                Column {
+                    Text("₹${item.test.price}", fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                    item.test.originalPrice?.let { Text("₹$it", fontSize = 14.sp, color = Color.Gray, textDecoration = TextDecoration.LineThrough) }
+                }
+                Row(horizontalArrangement = Arrangement.spacedBy(12.dp), verticalAlignment = Alignment.CenterVertically) {
+                    IconButton(
+                        onClick = { onUpdateQuantity(item.test.id, item.quantity - 1) },
+                        modifier = Modifier.size(32.dp).border(1.dp, Color.Gray, CircleShape)
+                    ) {
+                        Icon(Icons.Filled.KeyboardArrowDown, "Decrease", modifier = Modifier.size(16.dp))
+                    }
+                    Text("${item.quantity}", fontSize = 16.sp, fontWeight = FontWeight.Medium)
+                    IconButton(
+                        onClick = { onUpdateQuantity(item.test.id, item.quantity + 1) },
+                        modifier = Modifier.size(32.dp).border(1.dp, Color.Gray, CircleShape)
+                    ) {
+                        Icon(Icons.Filled.KeyboardArrowUp, "Increase", modifier = Modifier.size(16.dp))
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun PriceRow(label: String, value: String, color: Color = Color.Unspecified) {
+    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+        Text(label, color = if (color == Color.Unspecified) Color.Gray else color)
+        Text(value, color = if (color == Color.Unspecified) Color.Unspecified else color)
+    }
+}
+
+// APPOINTMENT
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun AppointmentScreen(onBack: () -> Unit, onSchedule: () -> Unit) {
+    var selectedDate by remember { mutableStateOf("") }
+    var selectedTime by remember { mutableStateOf("") }
+    val timeSlots = listOf("06:00 AM","07:00 AM","08:00 AM","09:00 AM","10:00 AM","11:00 AM","12:00 PM")
+
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text("Schedule Appointment") },
+                navigationIcon = { IconButton(onClick = onBack) { Icon(Icons.Filled.ArrowBack, "Back") } },
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color(0xFF3B82F6), titleContentColor = Color.White, navigationIconContentColor = Color.White)
+            )
+        },
+        bottomBar = {
+            Surface(shadowElevation = 8.dp, color = Color.White) {
+                Row(Modifier.fillMaxWidth().padding(16.dp), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
+                    Column { Text("Select date and time", color = Color.Gray); Text("Free home collection", fontWeight = FontWeight.Bold) }
+                    Button(onClick = onSchedule, enabled = selectedDate.isNotEmpty() && selectedTime.isNotEmpty(), colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF3B82F6))) { Text("Schedule Appointment") }
+                }
+            }
+        }
+    ) { padding ->
+        LazyColumn(Modifier.fillMaxSize().padding(padding)) {
+            item {
+                Card(Modifier.fillMaxWidth().padding(16.dp)) {
+                    Column(Modifier.padding(16.dp)) {
+                        Text("Collection Type", fontSize = 18.sp, fontWeight = FontWeight.SemiBold)
+                        Spacer(Modifier.height(16.dp))
+                        Card(Modifier.fillMaxWidth(), colors = CardDefaults.cardColors(containerColor = Color(0xFFEFF6FF))) {
+                            Row(Modifier.fillMaxWidth().padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
+                                Icon(Icons.Filled.Home, "Home", tint = Color(0xFF3B82F6), modifier = Modifier.size(32.dp))
+                                Spacer(Modifier.width(12.dp))
+                                Column { Text("Home Collection", fontWeight = FontWeight.Medium); Text("We'll come to your location", fontSize = 14.sp, color = Color.Gray) }
+                            }
+                        }
+                    }
+                }
+            }
+            item {
+                Card(Modifier.fillMaxWidth().padding(16.dp)) {
+                    Column(Modifier.padding(16.dp)) {
+                        Row(verticalAlignment = Alignment.CenterVertically) { Icon(Icons.Filled.DateRange, "Date", tint = Color(0xFF3B82F6)); Spacer(Modifier.width(8.dp)); Text("Select Date", fontSize = 18.sp, fontWeight = FontWeight.SemiBold) }
+                        Spacer(Modifier.height(16.dp))
+                        LazyRow {
+                            items(7) { index ->
+                                val dayNum = (index + 1).toString()
+                                DateChip(day = "$dayNum Nov", selected = selectedDate == dayNum, onClick = { selectedDate = dayNum })
+                                Spacer(Modifier.width(8.dp))
+                            }
+                        }
+                    }
+                }
+            }
+            if (selectedDate.isNotEmpty()) {
+                item {
+                    Card(Modifier.fillMaxWidth().padding(16.dp)) {
+                        Column(Modifier.padding(16.dp)) {
+                            Row(verticalAlignment = Alignment.CenterVertically) { Icon(Icons.Filled.DateRange, "Time", tint = Color(0xFF3B82F6)); Spacer(Modifier.width(8.dp)); Text("Select Time Slot", fontSize = 18.sp, fontWeight = FontWeight.SemiBold) }
+                            Spacer(Modifier.height(16.dp))
+                            Column {
+                                timeSlots.chunked(3).forEach { rowSlots ->
+                                    Row(Modifier.fillMaxWidth()) {
+                                        rowSlots.forEach { slot ->
+                                            TimeChip(time = slot, selected = selectedTime == slot, onClick = { selectedTime = slot }, modifier = Modifier.weight(1f))
+                                            Spacer(Modifier.width(8.dp))
+                                        }
+                                    }
+                                    Spacer(Modifier.height(8.dp))
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            item {
+                Card(Modifier.fillMaxWidth().padding(16.dp)) {
+                    Column(Modifier.padding(16.dp)) {
+                        Text("Personal Details", fontSize = 18.sp, fontWeight = FontWeight.SemiBold)
+                        Spacer(Modifier.height(16.dp))
+                        OutlinedTextField(value = "Shreyash", onValueChange = {}, label = { Text("Full Name") }, modifier = Modifier.fillMaxWidth())
+                        Spacer(Modifier.height(12.dp))
+                        OutlinedTextField(value = "+91 98765 43210", onValueChange = {}, label = { Text("Phone Number") }, modifier = Modifier.fillMaxWidth())
+                        Spacer(Modifier.height(12.dp))
+                        OutlinedTextField(value = "shreyash@labdash.com", onValueChange = {}, label = { Text("Email Address") }, modifier = Modifier.fillMaxWidth())
+                    }
+                }
+            }
+            if (selectedDate.isNotEmpty() && selectedTime.isNotEmpty()) {
+                item {
+                    Card(Modifier.fillMaxWidth().padding(16.dp), colors = CardDefaults.cardColors(containerColor = Color(0xFFEFF6FF))) {
+                        Column(Modifier.padding(16.dp)) {
+                            Text("Appointment Summary", fontWeight = FontWeight.SemiBold)
+                            Spacer(Modifier.height(12.dp))
+                            Text("Date: November $selectedDate, 2025")
+                            Text("Time: $selectedTime")
+                            Text("Type: Home Collection")
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun DateChip(day: String, selected: Boolean, onClick: () -> Unit) {
+    Card(
+        modifier = Modifier.width(80.dp).clickable(onClick = onClick),
+        colors = CardDefaults.cardColors(containerColor = if (selected) Color(0xFF3B82F6) else Color.White),
+        border = if (!selected) BorderStroke(1.dp, Color.Gray) else null
+    ) {
+        Box(Modifier.fillMaxWidth().padding(12.dp), contentAlignment = Alignment.Center) {
+            Text(day, color = if (selected) Color.White else Color.Black, fontWeight = if (selected) FontWeight.Bold else FontWeight.Normal)
+        }
+    }
+}
+
+@Composable
+fun TimeChip(time: String, selected: Boolean, onClick: () -> Unit, modifier: Modifier = Modifier) {
+    Card(
+        modifier = modifier.clickable(onClick = onClick),
+        colors = CardDefaults.cardColors(containerColor = if (selected) Color(0xFF3B82F6) else Color.White),
+        border = if (!selected) BorderStroke(1.dp, Color.Gray) else null
+    ) {
+        Box(Modifier.fillMaxWidth().padding(12.dp), contentAlignment = Alignment.Center) {
+            Text(time, color = if (selected) Color.White else Color.Black, fontWeight = if (selected) FontWeight.Bold else FontWeight.Normal, fontSize = 14.sp)
+        }
+    }
+}
+
+// ORDER TRACKING
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun OrderTrackingScreen(orders: List<Order>, onNavigate: (Screen) -> Unit) {
+    Scaffold(
+        topBar = { TopAppBar(title = { Text("Order Tracking") }, colors = TopAppBarDefaults.topAppBarColors(containerColor = Color(0xFF3B82F6), titleContentColor = Color.White)) },
+        bottomBar = { BottomNavigationBar(Screen.TRACKING, onNavigate) }
+    ) { padding ->
+        LazyColumn(Modifier.fillMaxSize().padding(padding)) {
+            items(orders) { order -> OrderCard(order) }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun OrderCard(order: Order) {
+    Card(Modifier.fillMaxWidth().padding(16.dp)) {
+        Column(Modifier.padding(16.dp)) {
+            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
+                Column { Text("Order #${order.id}", fontSize = 16.sp, fontWeight = FontWeight.Bold); Text(order.date, fontSize = 14.sp, color = Color.Gray) }
+                Badge(
+                    containerColor = when (order.status) {
+                        OrderStatus.SAMPLE_COLLECTED -> Color(0xFF3B82F6)
+                        OrderStatus.IN_PROCESS -> Color(0xFFF59E0B)
+                        OrderStatus.REPORT_READY -> Color(0xFF10B981)
+                    }
+                ) {
+                    Text(
+                        when (order.status) {
+                            OrderStatus.SAMPLE_COLLECTED -> "Sample Collected"
+                            OrderStatus.IN_PROCESS -> "Processing"
+                            OrderStatus.REPORT_READY -> "Report Ready"
+                        },
+                        color = Color.White
+                    )
+                }
+            }
+            Spacer(Modifier.height(16.dp))
+            order.tests.forEach { test ->
+                Card(Modifier.fillMaxWidth().padding(vertical = 4.dp), colors = CardDefaults.cardColors(containerColor = Color(0xFFF9FAFB))) {
+                    Row(Modifier.padding(12.dp), verticalAlignment = Alignment.CenterVertically) {
+                        Box(Modifier.size(32.dp).background(Color(0xFF3B82F6), CircleShape), contentAlignment = Alignment.Center) {
+                            Icon(Icons.Filled.Favorite, "Test", tint = Color.White, modifier = Modifier.size(16.dp))
+                        }
+                        Spacer(Modifier.width(12.dp))
+                        Column(Modifier.weight(1f)) { Text(test.name, fontWeight = FontWeight.Medium); Text("₹${test.price}", fontSize = 14.sp, color = Color.Gray) }
+                    }
+                }
+            }
+            Spacer(Modifier.height(16.dp))
+            val progress = when (order.status) {
+                OrderStatus.SAMPLE_COLLECTED -> 0.33f
+                OrderStatus.IN_PROCESS -> 0.66f
+                OrderStatus.REPORT_READY -> 1f
+            }
+            Text("Progress", fontSize = 14.sp, color = Color.Gray)
+            Spacer(Modifier.height(8.dp))
+            DeterminateProgress(progress = progress, modifier = Modifier.fillMaxWidth())
+            Spacer(Modifier.height(16.dp))
+            OrderTimeline(order.status)
+
+            if (order.status == OrderStatus.REPORT_READY) {
+                Spacer(Modifier.height(16.dp))
+                Button(onClick = { /* TODO: download */ }, modifier = Modifier.fillMaxWidth(), colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF3B82F6))) {
+                    Icon(Icons.Filled.Home, "Download")
+                    Spacer(Modifier.width(8.dp))
+                    Text("Download Report")
+                }
+            }
+            Spacer(Modifier.height(12.dp))
+            Card(Modifier.fillMaxWidth(), colors = CardDefaults.cardColors(containerColor = Color(0xFFEFF6FF))) {
+                Row(Modifier.fillMaxWidth().padding(12.dp), horizontalArrangement = Arrangement.SpaceBetween) {
+                    Text("Total Amount:", fontWeight = FontWeight.Medium)
+                    Text("₹${order.totalAmount}", fontWeight = FontWeight.Bold)
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun OrderTimeline(status: OrderStatus) {
+    Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+        TimelineStep("Sample Collected", "Your sample has been collected", completed = true)
+        TimelineStep("Processing", "Your sample is being tested", completed = status.ordinal >= OrderStatus.IN_PROCESS.ordinal, active = status == OrderStatus.IN_PROCESS)
+        TimelineStep("Report Ready", "Your report is ready to download", completed = status == OrderStatus.REPORT_READY, active = status == OrderStatus.IN_PROCESS)
+    }
+}
+
+@Composable
+fun TimelineStep(title: String, description: String, completed: Boolean, active: Boolean = false) {
+    Row(verticalAlignment = Alignment.Top) {
+        Box(
+            Modifier.size(24.dp).background(
+                when {
+                    completed -> Color(0xFF10B981)
+                    active -> Color(0xFF3B82F6)
+                    else -> Color.Gray
+                },
+                CircleShape
+            ),
+            contentAlignment = Alignment.Center
+        ) {
+            if (completed) Icon(Icons.Filled.Check, "Done", tint = Color.White, modifier = Modifier.size(16.dp))
+            else if (active) Icon(Icons.Filled.DateRange, "Processing", tint = Color.White, modifier = Modifier.size(16.dp))
+        }
+        Spacer(Modifier.width(12.dp))
+        Column { Text(title, fontWeight = FontWeight.Medium); Text(description, fontSize = 14.sp, color = Color.Gray) }
+    }
+}
+
+// PROFILE
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ProfileScreen(orders: List<Order>, onNavigate: (Screen) -> Unit) {
+    val completedOrders = orders.filter { it.status == OrderStatus.REPORT_READY }
+    Scaffold(
+        topBar = { TopAppBar(title = { Text("Profile") }, colors = TopAppBarDefaults.topAppBarColors(containerColor = Color(0xFF3B82F6), titleContentColor = Color.White)) },
+        bottomBar = { BottomNavigationBar(Screen.PROFILE, onNavigate) }
+    ) { padding ->
+        LazyColumn(Modifier.fillMaxSize().padding(padding)) {
+            item {
+                Box(Modifier.fillMaxWidth().background(GradientBlueGreen).padding(24.dp)) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Box(Modifier.size(80.dp).background(Color.White.copy(0.2f), CircleShape), contentAlignment = Alignment.Center) {
+                            Text("S", color = Color.White, fontSize = 32.sp, fontWeight = FontWeight.Bold)
+                        }
+                        Spacer(Modifier.width(16.dp))
+                        Column {
+                            Text("Shreyash", color = Color.White, fontSize = 24.sp, fontWeight = FontWeight.SemiBold)
+                            Text("shreyash@labdash.com", color = Color.White.copy(0.9f))
+                        }
+                    }
+                }
+            }
+            item {
+                Card(Modifier.fillMaxWidth().padding(16.dp)) {
+                    Column(Modifier.padding(16.dp)) {
+                        Text("Personal Information", fontSize = 18.sp, fontWeight = FontWeight.SemiBold)
+                        Spacer(Modifier.height(16.dp))
+                        InfoRow("Email", "shreyash@labdash.com", Icons.Filled.Email)
+                        Spacer(Modifier.height(12.dp))
+                        InfoRow("Phone", "+91 98765 43210", Icons.Filled.Phone)
+                        Spacer(Modifier.height(12.dp))
+                        InfoRow("Date of Birth", "15 Jan 1990", Icons.Filled.DateRange)
+                        Spacer(Modifier.height(12.dp))
+                        InfoRow("Address", "123 MG Road, Bangalore", Icons.Filled.LocationOn)
+                        Spacer(Modifier.height(16.dp))
+                        OutlinedButton(onClick = { /* TODO */ }, modifier = Modifier.fillMaxWidth()) { Text("Edit Profile") }
+                    }
+                }
+            }
+            item {
+                Card(Modifier.fillMaxWidth().padding(16.dp)) {
+                    Column(Modifier.padding(16.dp)) {
+                        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
+                            Text("Previous Reports", fontSize = 18.sp, fontWeight = FontWeight.SemiBold)
+                            Badge { Text("${completedOrders.size} reports") }
+                        }
+                        Spacer(Modifier.height(16.dp))
+                        if (completedOrders.isEmpty()) {
+                            Column(Modifier.fillMaxWidth().padding(vertical = 32.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+                                Icon(Icons.Filled.List, "No reports", modifier = Modifier.size(48.dp), tint = Color.Gray)
+                                Spacer(Modifier.height(8.dp))
+                                Text("No reports available yet", color = Color.Gray)
+                            }
+                        } else {
+                            completedOrders.forEach { order ->
+                                ReportCard(order)
+                                Spacer(Modifier.height(12.dp))
+                            }
+                        }
+                    }
+                }
+            }
+            item {
+                OutlinedButton(
+                    onClick = { /* TODO logout */ },
+                    modifier = Modifier.fillMaxWidth().padding(16.dp),
+                    colors = ButtonDefaults.outlinedButtonColors(contentColor = Color.Red)
+                ) {
+                    Icon(Icons.Filled.ExitToApp, "Logout")
+                    Spacer(Modifier.width(8.dp))
+                    Text("Logout")
+                }
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ReportCard(order: Order) {
+    Card(Modifier.fillMaxWidth(), colors = CardDefaults.cardColors(containerColor = Color(0xFFF9FAFB))) {
+        Column(Modifier.padding(16.dp)) {
+            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                Column { Text("Order #${order.id}", fontWeight = FontWeight.Medium); Text(order.date, fontSize = 14.sp, color = Color.Gray) }
+                Badge(containerColor = Color(0xFF10B981)) { Text("Completed", color = Color.White) }
+            }
+            Spacer(Modifier.height(12.dp))
+            HorizontalDivider()
+            Spacer(Modifier.height(12.dp))
+            order.tests.forEach { test ->
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Icon(Icons.Filled.Favorite, "Test", tint = Color(0xFF3B82F6), modifier = Modifier.size(16.dp))
+                    Spacer(Modifier.width(8.dp))
+                    Text(test.name, fontSize = 14.sp)
+                }
+                Spacer(Modifier.height(4.dp))
+            }
+            Spacer(Modifier.height(12.dp))
+            OutlinedButton(onClick = { /* TODO: download */ }, modifier = Modifier.fillMaxWidth()) {
+                Icon(Icons.Filled.Home, "Download", modifier = Modifier.size(16.dp))
+                Spacer(Modifier.width(8.dp))
+                Text("Download Report (PDF)")
+            }
+        }
+    }
+}
+
+// PACKAGES
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun PackagesScreen(onBack: () -> Unit) {
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text("Health Packages") },
+                navigationIcon = { IconButton(onClick = onBack) { Icon(Icons.Filled.ArrowBack, "Back") } },
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color(0xFF3B82F6), titleContentColor = Color.White, navigationIconContentColor = Color.White)
+            )
+        }
+    ) { padding ->
+        LazyColumn(Modifier.fillMaxSize().padding(padding)) {
+            items(SampleData.packages) { pkg -> PackageDetailCard(pkg) }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun PackageDetailCard(pkg: HealthPackage) {
+    Card(Modifier.fillMaxWidth().padding(16.dp)) {
+        Column(Modifier.padding(16.dp)) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Icon(Icons.Filled.ShoppingCart, "Package", tint = Color(0xFF3B82F6))
+                Spacer(Modifier.width(8.dp))
+                if (pkg.popular) Badge(containerColor = Color(0xFF10B981)) { Text("Popular", fontSize = 10.sp, color = Color.White) }
+            }
+            Spacer(Modifier.height(8.dp))
+            Text(pkg.name, fontSize = 18.sp, fontWeight = FontWeight.SemiBold)
+            Text(pkg.description, fontSize = 14.sp, color = Color.Gray)
+            Spacer(Modifier.height(12.dp))
+            Row {
+                Text("${pkg.parameters} params", fontSize = 12.sp, color = Color.Gray)
+                Spacer(Modifier.width(16.dp))
+                Text("${pkg.testsCount} tests", fontSize = 12.sp, color = Color.Gray)
+                Spacer(Modifier.width(16.dp))
+                Text(pkg.reportTime, fontSize = 12.sp, color = Color.Gray)
+            }
+            Spacer(Modifier.height(16.dp))
+            HorizontalDivider()
+            Spacer(Modifier.height(16.dp))
+            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
+                Column {
+                    Text("₹${pkg.price}", fontSize = 24.sp, fontWeight = FontWeight.Bold)
+                    Text("₹${pkg.originalPrice}", fontSize = 16.sp, color = Color.Gray, textDecoration = TextDecoration.LineThrough)
+                    Badge(containerColor = Color(0xFF10B981)) {
+                        val savePercent = ((pkg.originalPrice - pkg.price) * 100 / pkg.originalPrice)
+                        Text("Save $savePercent%", fontSize = 10.sp, color = Color.White)
+                    }
+                }
+                Button(onClick = { /* TODO */ }, colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF3B82F6))) { Text("View Details") }
+            }
+        }
+    }
+}
+
+// SEARCH
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun SearchScreen(query: String, onQueryChange: (String) -> Unit, onTestClick: (BloodTest) -> Unit, onClose: () -> Unit) {
+    val filteredTests = remember(query) {
+        if (query.isEmpty()) emptyList() else SampleData.tests.filter {
+            it.name.contains(query, true) || it.description.contains(query, true)
+        }
+    }
+    val recentSearches = listOf("CBC","Thyroid","Diabetes","Vitamin D")
+
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = {
+                    OutlinedTextField(
+                        value = query,
+                        onValueChange = onQueryChange,
+                        placeholder = { Text("Search for tests...") },
+                        modifier = Modifier.fillMaxWidth(),
+                        leadingIcon = { Icon(Icons.Filled.Search, "Search") },
+                        trailingIcon = {
+                            if (query.isNotEmpty()) IconButton(onClick = { onQueryChange("") }) { Icon(Icons.Filled.Close, "Clear") }
+                        },
+                        singleLine = true,
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedContainerColor = Color.White,
+                            unfocusedContainerColor = Color.White
+                        )
+                    )
+                },
+                navigationIcon = { IconButton(onClick = onClose) { Icon(Icons.Filled.ArrowBack, "Back") } },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = Color(0xFF3B82F6),
+                    navigationIconContentColor = Color.White
+                )
+            )
+        }
+    ) { padding ->
+        LazyColumn(Modifier.fillMaxSize().padding(padding)) {
+            if (query.isEmpty()) {
+                item { Text("Recent Searches", fontSize = 16.sp, fontWeight = FontWeight.SemiBold, modifier = Modifier.padding(16.dp)) }
+                items(recentSearches) { s ->
+                    Card(Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 4.dp).clickable { onQueryChange(s) }) {
+                        Row(Modifier.padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
+                            Icon(Icons.Filled.DateRange, "Recent", tint = Color.Gray)
+                            Spacer(Modifier.width(12.dp))
+                            Text(s)
+                        }
+                    }
+                }
+            } else if (filteredTests.isNotEmpty()) {
+                item { Text("${filteredTests.size} results found", fontSize = 14.sp, color = Color.Gray, modifier = Modifier.padding(16.dp)) }
+                items(filteredTests) { test ->
+                    TestCard(test, onClick = onTestClick)
+                }
+            } else {
+                item {
+                    Box(Modifier.fillMaxWidth().padding(64.dp), contentAlignment = Alignment.Center) {
+                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                            Icon(Icons.Filled.Search, "No results", modifier = Modifier.size(64.dp), tint = Color.Gray)
+                            Spacer(Modifier.height(16.dp))
+                            Text("No tests found", fontSize = 16.sp)
+                            Text("Try different keywords", fontSize = 14.sp, color = Color.Gray)
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+// BOTTOM NAV
+@Composable
+fun BottomNavigationBar(currentScreen: Screen, onNavigate: (Screen) -> Unit) {
+    NavigationBar(containerColor = Color.White) {
+        NavigationBarItem(selected = currentScreen == Screen.HOME, onClick = { onNavigate(Screen.HOME) }, icon = { Icon(Icons.Filled.Home, "Home") }, label = { Text("Home") })
+        NavigationBarItem(selected = currentScreen == Screen.TRACKING, onClick = { onNavigate(Screen.TRACKING) }, icon = { Icon(Icons.Filled.List, "Orders") }, label = { Text("Orders") })
+        NavigationBarItem(selected = currentScreen == Screen.CART, onClick = { onNavigate(Screen.CART) }, icon = { Icon(Icons.Filled.ShoppingCart, "Cart") }, label = { Text("Cart") })
+        NavigationBarItem(selected = currentScreen == Screen.PROFILE, onClick = { onNavigate(Screen.PROFILE) }, icon = { Icon(Icons.Filled.Person, "Profile") }, label = { Text("Profile") })
+    }
+}
+
+// HELPERS
+fun addToCart(cart: List<CartItem>, test: BloodTest): List<CartItem> =
+    cart.find { it.test.id == test.id }?.let {
+        cart.map { item -> if (item.test.id == test.id) item.copy(quantity = item.quantity + 1) else item }
+    } ?: (cart + CartItem(test, 1))
+
+fun updateCartQuantity(cart: List<CartItem>, testId: String, newQuantity: Int): List<CartItem> =
+    if (newQuantity <= 0) cart.filter { it.test.id != testId }
+    else cart.map { if (it.test.id == testId) it.copy(quantity = newQuantity) else it }
+
+fun calculateTotal(cart: List<CartItem>) = cart.sumOf { it.test.price * it.quantity }

@@ -1,12 +1,11 @@
 [build]
   publish = "."
 
-# Redirects for SPA-like behavior
+# Redirects for SPA-like behavior (fallback for unknown routes)
 [[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200
-  conditions = {Role = ["admin"]}
 
 # Headers for security and caching
 [[headers]]

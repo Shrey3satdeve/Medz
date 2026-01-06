@@ -1,0 +1,6 @@
+[
+  { "id": "pkg1", "name": "Essential Health Checkup", "description": "Basic screening package", "price": 999, "originalPrice": 1999, "testsCount": 5, "parameters": 59, "reportTime": "24 hours", "popular": true, "featured": true },
+  { "id": "pkg2", "name": "Diabetes Care Package", "description": "Comprehensive diabetes monitoring", "price": 1499, "originalPrice": 2499, "testsCount": 7, "parameters": 32, "reportTime": "24 hours", "popular": true, "featured": true },
+  { "id": "pkg3", "name": "Heart Health Package", "description": "Complete cardiovascular assessment", "price": 1799, "originalPrice": 2999, "testsCount": 8, "parameters": 45, "reportTime": "24 hours", "popular": false, "featured": true },
+  { "id": "pkg4", "name": "Women's Health Package", "description": "Designed for women's health", "price": 2499, "originalPrice": 3999, "testsCount": 8, "parameters": 48, "reportTime": "48 hours", "popular": true, "featured": true }
+]

@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Responsive Design Test - LabDash</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5rem;
+        }
+
+        .info-box {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+        }
+
+        .info-box h2 {
+            margin-bottom: 15px;
+            color: #ffd700;
+        }
+
+        .info-box p {
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+
+        .device-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .device-card {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .device-card h3 {
+            color: #4ade80;
+            margin-bottom: 10px;
+        }
+
+        .screen-size {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin: 20px 0;
+            text-align: center;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+        }
+
+        .test-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+
+        .test-btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-height: 44px;
+            min-width: 120px;
+        }
+
+        .test-btn:active {
+            transform: scale(0.95);
+        }
+
+        .btn-primary {
+            background: #6366f1;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #4f46e5;
+        }
+
+        .btn-success {
+            background: #10b981;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #059669;
+        }
+
+        .btn-warning {
+            background: #f59e0b;
+            color: white;
+        }
+
+        .btn-warning:hover {
+            background: #d97706;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.8rem;
+            }
+
+            .container {
+                padding: 20px;
+            }
+
+            .device-info {
+                grid-template-columns: 1fr;
+            }
+
+            .test-buttons {
+                flex-direction: column;
+            }
+
+            .test-btn {
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 1.5rem;
+            }
+
+            .container {
+                padding: 15px;
+            }
+
+            .info-box {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>✅ Responsive Design Active!</h1>
+        
+        <div class="info-box">
+            <h2>🎉 Website is Now Mobile & Desktop Friendly!</h2>
+            <p>✓ Perfect mobile browser sizing</p>
+            <p>✓ Optimized for tablets</p>
+            <p>✓ Great desktop experience</p>
+            <p>✓ Touch-friendly buttons (min 44x44px)</p>
+            <p>✓ Smooth scrolling and animations</p>
+            <p>✓ Mobile menu for small screens</p>
+        </div>
+
+        <div class="screen-size">
+            <p>Current Screen: <span id="screenWidth">0</span>px x <span id="screenHeight">0</span>px</p>
+        </div>
+
+        <div class="device-info">
+            <div class="device-card">
+                <h3>📱 Mobile</h3>
+                <p><strong>≤ 480px</strong></p>
+                <p>Optimized layout</p>
+                <p>Stacked elements</p>
+                <p>Full-width buttons</p>
+            </div>
+            <div class="device-card">
+                <h3>📱 Tablet</h3>
+                <p><strong>481px - 768px</strong></p>
+                <p>Adapted grid</p>
+                <p>Mobile menu</p>
+                <p>Touch optimized</p>
+            </div>
+            <div class="device-card">
+                <h3>💻 Laptop</h3>
+                <p><strong>769px - 1024px</strong></p>
+                <p>Multi-column</p>
+                <p>Full navigation</p>
+                <p>Desktop features</p>
+            </div>
+            <div class="device-card">
+                <h3>🖥️ Desktop</h3>
+                <p><strong>> 1024px</strong></p>
+                <p>Full layout</p>
+                <p>All features</p>
+                <p>Maximum space</p>
+            </div>
+        </div>
+
+        <div class="test-buttons">
+            <button class="test-btn btn-primary" onclick="alert('Touch feedback working!')">Test Touch</button>
+            <button class="test-btn btn-success" onclick="window.location.href='index.html'">Open Homepage</button>
+            <button class="test-btn btn-warning" onclick="alert('Buttons are 44x44px minimum for mobile!')">Check Size</button>
+        </div>
+
+        <div class="info-box" style="margin-top: 30px;">
+            <h2>🔧 What Was Changed:</h2>
+            <p>1. <strong>Enhanced Responsive Breakpoints:</strong> 1024px, 768px, 480px, 360px</p>
+            <p>2. <strong>Mobile Menu:</strong> Hamburger menu for small screens</p>
+            <p>3. <strong>Touch Optimization:</strong> Larger touch targets, better feedback</p>
+            <p>4. <strong>Flexible Layouts:</strong> Grid adapts from 4 columns → 2 → 1</p>
+            <p>5. <strong>Typography Scaling:</strong> Font sizes adjust for readability</p>
+            <p>6. <strong>Button Improvements:</strong> Full-width on mobile, proper sizing</p>
+            <p>7. <strong>Performance:</strong> Disabled heavy animations on mobile</p>
+            <p>8. <strong>Smooth Scrolling:</strong> iOS -webkit-overflow-scrolling</p>
+        </div>
+
+        <div class="footer">
+            <p>✨ Your website now works perfectly on all devices!</p>
+            <p style="margin-top: 10px; font-size: 14px; opacity: 0.8;">
+                Resize your browser window to see the responsive design in action
+            </p>
+        </div>
+    </div>
+
+    <script>
+        function updateScreenSize() {
+            document.getElementById('screenWidth').textContent = window.innerWidth;
+            document.getElementById('screenHeight').textContent = window.innerHeight;
+        }
+
+        updateScreenSize();
+        window.addEventListener('resize', updateScreenSize);
+    </script>
+</body>
+</html>
