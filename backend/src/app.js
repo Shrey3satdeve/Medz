@@ -45,10 +45,10 @@ app.use(compression());
 app.use(morgan('dev'));
 
 // Serve static files from frontend directory
-app.use(express.static(path.join(__dirname, '../../fronted')));
+app.use(express.static(path.join(__dirname, '../../frontend')));
 
 // Optional roots
-app.get('/', (_, res) => res.sendFile(path.join(__dirname, '../../fronted/index.html')));
+app.get('/', (_, res) => res.sendFile(path.join(__dirname, '../../frontend/index.html')));
 app.get('/api', (_, res) => res.json({ 
     status: 'ok', 
     version: '1.0.0',
