@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pharma Products - Medz | Online Medicine Delivery</title>
-    <meta name="description" content="Order prescription and OTC medicines online with same-day delivery. 100% genuine medicines, upload prescription, get up to 25% discount. Trusted pharmacy.">
+    <meta name="description" content="Order prescription and OTC medicines online with same-day delivery. 100% genuine medicines, upload prescription. Trusted pharmacy.">
     
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -64,6 +64,8 @@
             background: linear-gradient(135deg, var(--primary), var(--secondary));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-decoration: none;
         }
 
         .nav-links {
@@ -79,8 +81,18 @@
             transition: color 0.3s;
         }
 
-        .nav-links a:hover {
+        .nav-links a:hover,
+        .nav-links a.active {
             color: var(--primary);
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--white);
+            font-size: 1.5rem;
+            cursor: pointer;
         }
 
         /* Hero Section */
@@ -99,10 +111,11 @@
             grid-template-columns: 1fr 1fr;
             gap: 4rem;
             align-items: center;
+            width: 100%;
         }
 
         .hero-text h1 {
-            font-size: 3.5rem;
+            font-size: clamp(2rem, 5vw, 3.5rem);
             font-weight: 800;
             line-height: 1.2;
             margin-bottom: 1.5rem;
@@ -112,12 +125,19 @@
             background: linear-gradient(135deg, var(--primary), var(--secondary));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
         .hero-text p {
-            font-size: 1.2rem;
+            font-size: clamp(1rem, 2vw, 1.2rem);
             color: var(--gray);
             margin-bottom: 2rem;
+        }
+
+        .btn-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
         }
 
         .btn-primary {
@@ -154,7 +174,6 @@
             font-weight: 600;
             cursor: pointer;
             text-decoration: none;
-            margin-left: 1rem;
             transition: all 0.3s;
         }
 
@@ -162,12 +181,26 @@
             background: var(--primary);
         }
 
+        .hero-image {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .hero-image img {
+            width: 100%;
+            max-width: 500px;
+            height: auto;
+            border-radius: 20px;
+            object-fit: cover;
+        }
+
         /* Upload Prescription Box */
         .upload-box {
             background: linear-gradient(135deg, var(--dark-light), var(--dark));
             border: 2px dashed var(--primary);
             border-radius: 20px;
-            padding: 2.5rem;
+            padding: 2rem;
             text-align: center;
             margin-top: 2rem;
             cursor: pointer;
@@ -180,7 +213,7 @@
         }
 
         .upload-box i {
-            font-size: 3rem;
+            font-size: 2.5rem;
             color: var(--primary);
             margin-bottom: 1rem;
         }
@@ -194,39 +227,41 @@
             font-size: 0.9rem;
         }
 
-        /* Features Section */
-        .features {
-            padding: 100px 5%;
-            background: var(--dark-light);
-        }
-
+        /* Section Styles */
         .section-title {
             text-align: center;
-            margin-bottom: 4rem;
+            margin-bottom: 3rem;
+            padding: 0 1rem;
         }
 
         .section-title h2 {
-            font-size: 2.5rem;
+            font-size: clamp(1.8rem, 4vw, 2.5rem);
             font-weight: 700;
             margin-bottom: 1rem;
         }
 
         .section-title p {
             color: var(--gray);
-            font-size: 1.1rem;
+            font-size: clamp(0.9rem, 2vw, 1.1rem);
+        }
+
+        /* Features Section */
+        .features {
+            padding: 80px 5%;
+            background: var(--dark-light);
         }
 
         .features-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
             max-width: 1400px;
             margin: 0 auto;
         }
 
         .feature-card {
             background: var(--dark);
-            padding: 2.5rem;
+            padding: 2rem;
             border-radius: 20px;
             border: 1px solid rgba(16, 185, 129, 0.2);
             transition: all 0.3s;
@@ -239,42 +274,43 @@
         }
 
         .feature-icon {
-            width: 70px;
-            height: 70px;
+            width: 60px;
+            height: 60px;
             background: linear-gradient(135deg, var(--primary), var(--secondary));
             border-radius: 16px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.8rem;
+            font-size: 1.5rem;
             margin-bottom: 1.5rem;
         }
 
         .feature-card h3 {
-            font-size: 1.4rem;
-            margin-bottom: 1rem;
+            font-size: 1.2rem;
+            margin-bottom: 0.8rem;
         }
 
         .feature-card p {
             color: var(--gray);
+            font-size: 0.95rem;
         }
 
         /* Categories Section */
         .categories {
-            padding: 100px 5%;
+            padding: 80px 5%;
         }
 
         .categories-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1.5rem;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
             max-width: 1400px;
             margin: 0 auto;
         }
 
         .category-card {
             background: linear-gradient(135deg, var(--dark-light), var(--dark));
-            padding: 2rem;
+            padding: 1.5rem;
             border-radius: 16px;
             text-align: center;
             border: 1px solid rgba(16, 185, 129, 0.1);
@@ -288,30 +324,30 @@
         }
 
         .category-icon {
-            font-size: 3rem;
-            margin-bottom: 1rem;
+            font-size: 2.5rem;
+            margin-bottom: 0.8rem;
         }
 
         .category-card h4 {
-            font-size: 1.1rem;
+            font-size: 0.95rem;
             margin-bottom: 0.3rem;
         }
 
         .category-card span {
             color: var(--gray);
-            font-size: 0.9rem;
+            font-size: 0.8rem;
         }
 
         /* Products Section */
         .products-section {
-            padding: 100px 5%;
+            padding: 80px 5%;
             background: var(--dark-light);
         }
 
         .products-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 2rem;
+            gap: 1.5rem;
             max-width: 1400px;
             margin: 0 auto;
         }
@@ -331,25 +367,20 @@
         }
 
         .product-image {
-            height: 180px;
-            background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(6, 182, 212, 0.2));
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 4rem;
+            height: 200px;
+            overflow: hidden;
             position: relative;
         }
 
-        .discount-badge {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            background: var(--success);
-            color: white;
-            padding: 0.3rem 0.8rem;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: 600;
+        .product-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s;
+        }
+
+        .product-card:hover .product-image img {
+            transform: scale(1.1);
         }
 
         .product-info {
@@ -357,7 +388,7 @@
         }
 
         .product-category {
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             color: var(--primary);
             font-weight: 600;
             text-transform: uppercase;
@@ -367,7 +398,7 @@
         .product-name {
             font-size: 1.1rem;
             font-weight: 700;
-            margin-bottom: 0.3rem;
+            margin-bottom: 0.5rem;
         }
 
         .product-desc {
@@ -376,50 +407,35 @@
             margin-bottom: 1rem;
         }
 
-        .product-footer {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .product-price {
-            font-size: 1.3rem;
-            font-weight: 700;
-            color: var(--primary);
-        }
-
-        .product-price span {
-            font-size: 0.9rem;
-            color: var(--gray);
-            text-decoration: line-through;
-            margin-left: 0.5rem;
-        }
-
         .add-to-cart {
-            width: 45px;
-            height: 45px;
+            width: 100%;
+            padding: 0.8rem;
             background: var(--primary);
             border: none;
             border-radius: 12px;
             color: white;
-            font-size: 1.2rem;
+            font-size: 1rem;
+            font-weight: 600;
             cursor: pointer;
             transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
         }
 
         .add-to-cart:hover {
             background: var(--primary-dark);
-            transform: scale(1.1);
         }
 
         /* How to Order */
         .how-to-order {
-            padding: 100px 5%;
+            padding: 80px 5%;
         }
 
         .steps-container {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 2rem;
             max-width: 1200px;
             margin: 0 auto;
@@ -431,20 +447,20 @@
         }
 
         .step-number {
-            width: 80px;
-            height: 80px;
+            width: 70px;
+            height: 70px;
             background: linear-gradient(135deg, var(--primary), var(--secondary));
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 2rem;
+            font-size: 1.8rem;
             font-weight: 700;
             margin: 0 auto 1.5rem;
         }
 
         .step h4 {
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             margin-bottom: 0.5rem;
         }
 
@@ -453,65 +469,14 @@
             font-size: 0.9rem;
         }
 
-        /* Offers Section */
-        .offers {
-            padding: 100px 5%;
-            background: var(--dark-light);
-        }
-
-        .offers-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 2rem;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .offer-card {
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            padding: 2.5rem;
-            border-radius: 24px;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .offer-card::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            right: -50%;
-            width: 100%;
-            height: 100%;
-            background: rgba(255,255,255,0.1);
-            border-radius: 50%;
-        }
-
-        .offer-card h3 {
-            font-size: 2rem;
-            margin-bottom: 0.5rem;
-        }
-
-        .offer-card p {
-            opacity: 0.9;
-            margin-bottom: 1.5rem;
-        }
-
-        .offer-code {
-            display: inline-block;
-            background: rgba(255,255,255,0.2);
-            padding: 0.5rem 1.5rem;
-            border-radius: 8px;
-            font-weight: 700;
-            letter-spacing: 2px;
-        }
-
         /* Trust Badges */
         .trust-badges {
             padding: 60px 5%;
             display: flex;
             justify-content: center;
-            gap: 4rem;
+            gap: 2rem;
             flex-wrap: wrap;
+            background: var(--dark-light);
         }
 
         .badge-item {
@@ -521,29 +486,29 @@
         }
 
         .badge-icon {
-            width: 60px;
-            height: 60px;
+            width: 50px;
+            height: 50px;
             background: rgba(16, 185, 129, 0.2);
             border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.5rem;
+            font-size: 1.3rem;
             color: var(--primary);
         }
 
         .badge-text h5 {
-            font-size: 1.1rem;
+            font-size: 1rem;
         }
 
         .badge-text span {
             color: var(--gray);
-            font-size: 0.85rem;
+            font-size: 0.8rem;
         }
 
         /* Footer */
         .footer {
-            background: var(--dark-light);
+            background: var(--dark);
             padding: 60px 5% 30px;
             text-align: center;
         }
@@ -551,7 +516,7 @@
         .footer-links {
             display: flex;
             justify-content: center;
-            gap: 3rem;
+            gap: 2rem;
             margin-bottom: 2rem;
             flex-wrap: wrap;
         }
@@ -572,27 +537,121 @@
             color: var(--gray);
         }
 
-        /* Responsive */
-        @media (max-width: 768px) {
+        /* Mobile Responsive */
+        @media (max-width: 992px) {
             .hero-content {
                 grid-template-columns: 1fr;
                 text-align: center;
+                gap: 2rem;
             }
 
-            .hero-text h1 {
-                font-size: 2.5rem;
+            .hero-image {
+                order: -1;
+            }
+
+            .hero-image img {
+                max-width: 350px;
+            }
+
+            .btn-group {
+                justify-content: center;
+            }
+
+            .upload-box {
+                max-width: 400px;
+                margin: 2rem auto 0;
             }
 
             .steps-container {
                 grid-template-columns: repeat(2, 1fr);
             }
+        }
+
+        @media (max-width: 768px) {
+            .navbar {
+                padding: 1rem 4%;
+            }
 
             .nav-links {
-                display: none;
+                position: fixed;
+                top: 70px;
+                left: 0;
+                right: 0;
+                background: var(--dark-light);
+                flex-direction: column;
+                padding: 2rem;
+                gap: 1.5rem;
+                transform: translateY(-150%);
+                transition: transform 0.3s ease;
+                text-align: center;
+            }
+
+            .nav-links.active {
+                transform: translateY(0);
+            }
+
+            .mobile-menu-btn {
+                display: block;
+            }
+
+            .hero {
+                padding: 100px 4% 60px;
+            }
+
+            .hero-text h1 {
+                font-size: 1.8rem;
+            }
+
+            .btn-primary, .btn-secondary {
+                padding: 0.8rem 1.5rem;
+                font-size: 0.9rem;
+            }
+
+            .categories-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .products-grid {
+                grid-template-columns: 1fr;
+                max-width: 400px;
+                margin: 0 auto;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .steps-container {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
             }
 
             .trust-badges {
-                gap: 2rem;
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero-image img {
+                max-width: 280px;
+            }
+
+            .categories-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 0.8rem;
+            }
+
+            .category-card {
+                padding: 1rem;
+            }
+
+            .category-icon {
+                font-size: 2rem;
+            }
+
+            .section-title h2 {
+                font-size: 1.5rem;
             }
         }
     </style>
@@ -601,7 +660,10 @@
     <!-- Navigation -->
     <nav class="navbar">
         <a href="index.html" class="logo">Medz</a>
-        <ul class="nav-links">
+        <button class="mobile-menu-btn" onclick="toggleMenu()">
+            <i class="fas fa-bars"></i>
+        </button>
+        <ul class="nav-links" id="navLinks">
             <li><a href="index.html">Home</a></li>
             <li><a href="lab-tests.html">Lab Tests</a></li>
             <li><a href="petcare.html">PetCare</a></li>
@@ -615,27 +677,29 @@
         <div class="hero-content">
             <div class="hero-text" data-aos="fade-right">
                 <h1>Order <span>Medicines</span> Online - Fast & Genuine</h1>
-                <p>Get prescription and OTC medicines delivered to your doorstep. 100% genuine products from licensed pharmacies with up to 25% discount.</p>
-                <a href="#products" class="btn-primary">
-                    <i class="fas fa-pills"></i> Order Medicines
-                </a>
-                <a href="#" class="btn-secondary">
-                    <i class="fas fa-upload"></i> Upload Prescription
-                </a>
+                <p>Get prescription and OTC medicines delivered to your doorstep. 100% genuine products from licensed pharmacies.</p>
+                <div class="btn-group">
+                    <a href="#products" class="btn-primary">
+                        <i class="fas fa-pills"></i> Order Medicines
+                    </a>
+                    <a href="#" class="btn-secondary">
+                        <i class="fas fa-upload"></i> Upload Prescription
+                    </a>
+                </div>
                 
                 <div class="upload-box" data-aos="fade-up" data-aos-delay="200">
                     <i class="fas fa-cloud-upload-alt"></i>
                     <h4>Upload Prescription</h4>
-                    <p>Drop your prescription here or click to browse. We'll deliver all medicines at best prices.</p>
+                    <p>Drop your prescription here or click to browse</p>
                 </div>
             </div>
             <div class="hero-image" data-aos="fade-left">
-                <img src="https://illustrations.popsy.co/green/medicine.svg" alt="Pharma Products" style="width: 100%; max-width: 500px;">
+                <img src="https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=500&h=500&fit=crop" alt="Pharmacy Medicines">
             </div>
         </div>
     </section>
 
-    <!-- Unique Features -->
+    <!-- Features -->
     <section class="features">
         <div class="section-title" data-aos="fade-up">
             <h2>Why Order from Medz Pharma?</h2>
@@ -648,7 +712,7 @@
                     <i class="fas fa-check-double"></i>
                 </div>
                 <h3>100% Genuine Medicines</h3>
-                <p>All medicines sourced directly from licensed distributors. Verified authenticity with batch tracking.</p>
+                <p>All medicines sourced directly from licensed distributors with verified authenticity.</p>
             </div>
             
             <div class="feature-card" data-aos="fade-up" data-aos-delay="200">
@@ -656,39 +720,23 @@
                     <i class="fas fa-truck-fast"></i>
                 </div>
                 <h3>Same Day Delivery</h3>
-                <p>Order before 6 PM and get same-day delivery. Express delivery available in select cities.</p>
+                <p>Order before 6 PM and get same-day delivery. Express delivery available.</p>
             </div>
             
             <div class="feature-card" data-aos="fade-up" data-aos-delay="300">
                 <div class="feature-icon">
-                    <i class="fas fa-percent"></i>
+                    <i class="fas fa-file-prescription"></i>
                 </div>
-                <h3>Up to 25% Discount</h3>
-                <p>Flat discounts on all medicines. Additional savings with subscription orders and health plans.</p>
+                <h3>Easy Prescription Upload</h3>
+                <p>Just upload your prescription and we'll process your order quickly.</p>
             </div>
             
             <div class="feature-card" data-aos="fade-up" data-aos-delay="400">
                 <div class="feature-icon">
-                    <i class="fas fa-file-prescription"></i>
-                </div>
-                <h3>Easy Prescription Upload</h3>
-                <p>Just upload your prescription and we'll do the rest. Our pharmacists verify and process orders quickly.</p>
-            </div>
-            
-            <div class="feature-card" data-aos="fade-up" data-aos-delay="500">
-                <div class="feature-icon">
-                    <i class="fas fa-repeat"></i>
-                </div>
-                <h3>Auto-Refill Reminders</h3>
-                <p>Never miss a dose! Get automatic refill reminders and reorder with one click.</p>
-            </div>
-            
-            <div class="feature-card" data-aos="fade-up" data-aos-delay="600">
-                <div class="feature-icon">
                     <i class="fas fa-headset"></i>
                 </div>
                 <h3>24/7 Pharmacist Support</h3>
-                <p>Have questions? Our certified pharmacists are available round the clock for medicine guidance.</p>
+                <p>Our certified pharmacists are available round the clock for guidance.</p>
             </div>
         </div>
     </section>
@@ -703,7 +751,7 @@
         <div class="categories-grid">
             <div class="category-card" data-aos="fade-up">
                 <div class="category-icon">💊</div>
-                <h4>Prescription Medicines</h4>
+                <h4>Prescription</h4>
                 <span>Upload Rx</span>
             </div>
             
@@ -745,7 +793,7 @@
             
             <div class="category-card" data-aos="fade-up" data-aos-delay="700">
                 <div class="category-icon">🏥</div>
-                <h4>Medical Devices</h4>
+                <h4>Devices</h4>
                 <span>BP, Glucometer</span>
             </div>
         </div>
@@ -755,135 +803,103 @@
     <section class="products-section" id="products">
         <div class="section-title" data-aos="fade-up">
             <h2>Popular Medicines & Products</h2>
-            <p>Genuine medicines at best prices</p>
+            <p>Genuine medicines from licensed pharmacies</p>
         </div>
         
         <div class="products-grid">
             <div class="product-card" data-aos="fade-up">
                 <div class="product-image">
-                    💊
-                    <span class="discount-badge">20% OFF</span>
+                    <img src="https://images.unsplash.com/photo-1550572017-edd951b55104?w=400&h=300&fit=crop" alt="Pain Relief Tablets">
                 </div>
                 <div class="product-info">
                     <div class="product-category">Pain Relief</div>
-                    <div class="product-name">Dolo 650 (15 Tablets)</div>
-                    <div class="product-desc">Paracetamol for fever and pain relief</div>
-                    <div class="product-footer">
-                        <div class="product-price">₹29 <span>₹36</span></div>
-                        <button class="add-to-cart"><i class="fas fa-plus"></i></button>
-                    </div>
+                    <div class="product-name">Dolo 650 Tablets</div>
+                    <div class="product-desc">Paracetamol for fever and pain relief - 15 tablets pack</div>
+                    <button class="add-to-cart"><i class="fas fa-plus"></i> Add to Cart</button>
                 </div>
             </div>
             
             <div class="product-card" data-aos="fade-up" data-aos-delay="100">
                 <div class="product-image">
-                    🩹
-                    <span class="discount-badge">15% OFF</span>
+                    <img src="https://images.unsplash.com/photo-1587854692152-cbe660dbde88?w=400&h=300&fit=crop" alt="Antiseptic Solution">
                 </div>
                 <div class="product-info">
                     <div class="product-category">Antiseptic</div>
                     <div class="product-name">Betadine Solution 100ml</div>
-                    <div class="product-desc">Antiseptic solution for wound care</div>
-                    <div class="product-footer">
-                        <div class="product-price">₹110 <span>₹130</span></div>
-                        <button class="add-to-cart"><i class="fas fa-plus"></i></button>
-                    </div>
+                    <div class="product-desc">Antiseptic solution for wound care and infection prevention</div>
+                    <button class="add-to-cart"><i class="fas fa-plus"></i> Add to Cart</button>
                 </div>
             </div>
             
             <div class="product-card" data-aos="fade-up" data-aos-delay="200">
                 <div class="product-image">
-                    💉
-                    <span class="discount-badge">25% OFF</span>
+                    <img src="https://images.unsplash.com/photo-1576602976047-174e57a47881?w=400&h=300&fit=crop" alt="Diabetes Care">
                 </div>
                 <div class="product-info">
                     <div class="product-category">Diabetes Care</div>
-                    <div class="product-name">Accu-Chek Test Strips (50)</div>
-                    <div class="product-desc">Blood glucose test strips</div>
-                    <div class="product-footer">
-                        <div class="product-price">₹899 <span>₹1,199</span></div>
-                        <button class="add-to-cart"><i class="fas fa-plus"></i></button>
-                    </div>
+                    <div class="product-name">Accu-Chek Test Strips</div>
+                    <div class="product-desc">Blood glucose test strips - 50 strips pack</div>
+                    <button class="add-to-cart"><i class="fas fa-plus"></i> Add to Cart</button>
                 </div>
             </div>
             
             <div class="product-card" data-aos="fade-up" data-aos-delay="300">
                 <div class="product-image">
-                    💪
-                    <span class="discount-badge">18% OFF</span>
+                    <img src="https://images.unsplash.com/photo-1559757175-5700dde675bc?w=400&h=300&fit=crop" alt="Vitamin Supplements">
                 </div>
                 <div class="product-info">
                     <div class="product-category">Vitamins</div>
-                    <div class="product-name">Shelcal 500 (30 Tablets)</div>
-                    <div class="product-desc">Calcium + Vitamin D3 supplement</div>
-                    <div class="product-footer">
-                        <div class="product-price">₹185 <span>₹225</span></div>
-                        <button class="add-to-cart"><i class="fas fa-plus"></i></button>
-                    </div>
+                    <div class="product-name">Shelcal 500 Tablets</div>
+                    <div class="product-desc">Calcium + Vitamin D3 supplement - 30 tablets</div>
+                    <button class="add-to-cart"><i class="fas fa-plus"></i> Add to Cart</button>
                 </div>
             </div>
             
             <div class="product-card" data-aos="fade-up" data-aos-delay="400">
                 <div class="product-image">
-                    🧴
-                    <span class="discount-badge">22% OFF</span>
+                    <img src="https://images.unsplash.com/photo-1556228720-195a672e8a03?w=400&h=300&fit=crop" alt="Skin Care Moisturizer">
                 </div>
                 <div class="product-info">
                     <div class="product-category">Skin Care</div>
                     <div class="product-name">Cetaphil Moisturizer 250ml</div>
-                    <div class="product-desc">Gentle moisturizing lotion</div>
-                    <div class="product-footer">
-                        <div class="product-price">₹545 <span>₹699</span></div>
-                        <button class="add-to-cart"><i class="fas fa-plus"></i></button>
-                    </div>
+                    <div class="product-desc">Gentle moisturizing lotion for all skin types</div>
+                    <button class="add-to-cart"><i class="fas fa-plus"></i> Add to Cart</button>
                 </div>
             </div>
             
             <div class="product-card" data-aos="fade-up" data-aos-delay="500">
                 <div class="product-image">
-                    ❤️
-                    <span class="discount-badge">15% OFF</span>
+                    <img src="https://images.unsplash.com/photo-1631549916768-4119b2e5f926?w=400&h=300&fit=crop" alt="Cardiac Care">
                 </div>
                 <div class="product-info">
                     <div class="product-category">Cardiac Care</div>
-                    <div class="product-name">Ecosprin 75 (30 Tablets)</div>
-                    <div class="product-desc">Aspirin for heart protection</div>
-                    <div class="product-footer">
-                        <div class="product-price">₹18 <span>₹21</span></div>
-                        <button class="add-to-cart"><i class="fas fa-plus"></i></button>
-                    </div>
+                    <div class="product-name">Ecosprin 75 Tablets</div>
+                    <div class="product-desc">Aspirin for heart protection - 30 tablets</div>
+                    <button class="add-to-cart"><i class="fas fa-plus"></i> Add to Cart</button>
                 </div>
             </div>
             
             <div class="product-card" data-aos="fade-up" data-aos-delay="600">
                 <div class="product-image">
-                    🏥
-                    <span class="discount-badge">30% OFF</span>
+                    <img src="https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=400&h=300&fit=crop" alt="BP Monitor">
                 </div>
                 <div class="product-info">
                     <div class="product-category">Medical Device</div>
-                    <div class="product-name">Dr. Morepen BP Monitor</div>
-                    <div class="product-desc">Digital blood pressure monitor</div>
-                    <div class="product-footer">
-                        <div class="product-price">₹1,099 <span>₹1,599</span></div>
-                        <button class="add-to-cart"><i class="fas fa-plus"></i></button>
-                    </div>
+                    <div class="product-name">Digital BP Monitor</div>
+                    <div class="product-desc">Automatic blood pressure monitor for home use</div>
+                    <button class="add-to-cart"><i class="fas fa-plus"></i> Add to Cart</button>
                 </div>
             </div>
             
             <div class="product-card" data-aos="fade-up" data-aos-delay="700">
                 <div class="product-image">
-                    🤧
-                    <span class="discount-badge">12% OFF</span>
+                    <img src="https://images.unsplash.com/photo-1607619056574-7b8d3ee536b2?w=400&h=300&fit=crop" alt="Cough Syrup">
                 </div>
                 <div class="product-info">
                     <div class="product-category">Cold & Cough</div>
                     <div class="product-name">Benadryl Syrup 100ml</div>
-                    <div class="product-desc">Cough relief syrup</div>
-                    <div class="product-footer">
-                        <div class="product-price">₹89 <span>₹101</span></div>
-                        <button class="add-to-cart"><i class="fas fa-plus"></i></button>
-                    </div>
+                    <div class="product-desc">Effective cough relief syrup for adults</div>
+                    <button class="add-to-cart"><i class="fas fa-plus"></i> Add to Cart</button>
                 </div>
             </div>
         </div>
@@ -916,34 +932,6 @@
                 <div class="step-number">4</div>
                 <h4>Get Delivered</h4>
                 <p>Receive at your doorstep</p>
-            </div>
-        </div>
-    </section>
-
-    <!-- Offers -->
-    <section class="offers">
-        <div class="section-title" data-aos="fade-up">
-            <h2>Exclusive Offers</h2>
-            <p>Save more on your medicine orders</p>
-        </div>
-        
-        <div class="offers-grid">
-            <div class="offer-card" data-aos="fade-up">
-                <h3>FLAT 25% OFF</h3>
-                <p>On your first medicine order. No minimum order value.</p>
-                <div class="offer-code">FIRST25</div>
-            </div>
-            
-            <div class="offer-card" data-aos="fade-up" data-aos-delay="100">
-                <h3>FREE DELIVERY</h3>
-                <p>On all orders above ₹499. Same day delivery available.</p>
-                <div class="offer-code">FREEDEL</div>
-            </div>
-            
-            <div class="offer-card" data-aos="fade-up" data-aos-delay="200">
-                <h3>15% CASHBACK</h3>
-                <p>Pay via UPI and get 15% cashback up to ₹100.</p>
-                <div class="offer-code">UPICARE</div>
             </div>
         </div>
     </section>
@@ -1004,6 +992,10 @@
             duration: 800,
             once: true
         });
+
+        function toggleMenu() {
+            document.getElementById('navLinks').classList.toggle('active');
+        }
     </script>
 </body>
 </html>

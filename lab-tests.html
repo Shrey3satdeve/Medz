@@ -64,6 +64,8 @@
             background: linear-gradient(135deg, var(--primary), var(--secondary));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-decoration: none;
         }
 
         .nav-links {
@@ -79,8 +81,18 @@
             transition: color 0.3s;
         }
 
-        .nav-links a:hover {
+        .nav-links a:hover,
+        .nav-links a.active {
             color: var(--primary);
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--white);
+            font-size: 1.5rem;
+            cursor: pointer;
         }
 
         /* Hero Section */
@@ -99,10 +111,11 @@
             grid-template-columns: 1fr 1fr;
             gap: 4rem;
             align-items: center;
+            width: 100%;
         }
 
         .hero-text h1 {
-            font-size: 3.5rem;
+            font-size: clamp(2rem, 5vw, 3.5rem);
             font-weight: 800;
             line-height: 1.2;
             margin-bottom: 1.5rem;
@@ -112,12 +125,19 @@
             background: linear-gradient(135deg, var(--primary), var(--secondary));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
         .hero-text p {
-            font-size: 1.2rem;
+            font-size: clamp(1rem, 2vw, 1.2rem);
             color: var(--gray);
             margin-bottom: 2rem;
+        }
+
+        .btn-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
         }
 
         .btn-primary {
@@ -154,7 +174,6 @@
             font-weight: 600;
             cursor: pointer;
             text-decoration: none;
-            margin-left: 1rem;
             transition: all 0.3s;
         }
 
@@ -162,11 +181,26 @@
             background: var(--primary);
         }
 
+        .hero-image {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .hero-image img {
+            width: 100%;
+            max-width: 500px;
+            height: auto;
+            border-radius: 20px;
+            object-fit: cover;
+        }
+
         /* Stats */
         .stats-bar {
             display: flex;
-            gap: 3rem;
-            margin-top: 3rem;
+            gap: 2rem;
+            margin-top: 2rem;
+            flex-wrap: wrap;
         }
 
         .stat-item {
@@ -174,49 +208,51 @@
         }
 
         .stat-number {
-            font-size: 2.5rem;
+            font-size: clamp(1.8rem, 3vw, 2.5rem);
             font-weight: 800;
             color: var(--primary);
         }
 
         .stat-label {
             color: var(--gray);
-            font-size: 0.9rem;
+            font-size: 0.85rem;
         }
 
-        /* Features Section */
-        .features {
-            padding: 100px 5%;
-            background: var(--dark-light);
-        }
-
+        /* Section Styles */
         .section-title {
             text-align: center;
-            margin-bottom: 4rem;
+            margin-bottom: 3rem;
+            padding: 0 1rem;
         }
 
         .section-title h2 {
-            font-size: 2.5rem;
+            font-size: clamp(1.8rem, 4vw, 2.5rem);
             font-weight: 700;
             margin-bottom: 1rem;
         }
 
         .section-title p {
             color: var(--gray);
-            font-size: 1.1rem;
+            font-size: clamp(0.9rem, 2vw, 1.1rem);
+        }
+
+        /* Features Section */
+        .features {
+            padding: 80px 5%;
+            background: var(--dark-light);
         }
 
         .features-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
             max-width: 1400px;
             margin: 0 auto;
         }
 
         .feature-card {
             background: var(--dark);
-            padding: 2.5rem;
+            padding: 2rem;
             border-radius: 20px;
             border: 1px solid rgba(99, 102, 241, 0.2);
             transition: all 0.3s;
@@ -229,29 +265,30 @@
         }
 
         .feature-icon {
-            width: 70px;
-            height: 70px;
+            width: 60px;
+            height: 60px;
             background: linear-gradient(135deg, var(--primary), var(--accent));
             border-radius: 16px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.8rem;
+            font-size: 1.5rem;
             margin-bottom: 1.5rem;
         }
 
         .feature-card h3 {
-            font-size: 1.4rem;
-            margin-bottom: 1rem;
+            font-size: 1.2rem;
+            margin-bottom: 0.8rem;
         }
 
         .feature-card p {
             color: var(--gray);
+            font-size: 0.95rem;
         }
 
-        /* Tests Categories */
+        /* Tests Section */
         .tests-section {
-            padding: 100px 5%;
+            padding: 80px 5%;
         }
 
         .tests-grid {
@@ -264,52 +301,89 @@
 
         .test-card {
             background: linear-gradient(135deg, var(--dark-light), var(--dark));
-            padding: 2rem;
-            border-radius: 16px;
+            border-radius: 20px;
+            overflow: hidden;
             border: 1px solid rgba(99, 102, 241, 0.1);
-            display: flex;
-            align-items: center;
-            gap: 1.5rem;
             transition: all 0.3s;
-            cursor: pointer;
         }
 
         .test-card:hover {
+            transform: translateY(-10px);
             border-color: var(--primary);
-            transform: scale(1.02);
+            box-shadow: 0 20px 40px rgba(99, 102, 241, 0.2);
         }
 
-        .test-icon {
-            width: 60px;
-            height: 60px;
-            background: rgba(99, 102, 241, 0.2);
+        .test-image {
+            height: 180px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .test-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s;
+        }
+
+        .test-card:hover .test-image img {
+            transform: scale(1.1);
+        }
+
+        .test-info {
+            padding: 1.5rem;
+        }
+
+        .test-category {
+            font-size: 0.75rem;
+            color: var(--primary);
+            font-weight: 600;
+            text-transform: uppercase;
+            margin-bottom: 0.5rem;
+        }
+
+        .test-name {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .test-desc {
+            color: var(--gray);
+            font-size: 0.85rem;
+            margin-bottom: 1rem;
+        }
+
+        .book-test {
+            width: 100%;
+            padding: 0.8rem;
+            background: var(--primary);
+            border: none;
             border-radius: 12px;
+            color: white;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.5rem;
-            color: var(--primary);
+            gap: 0.5rem;
         }
 
-        .test-info h4 {
-            font-size: 1.1rem;
-            margin-bottom: 0.3rem;
-        }
-
-        .test-info span {
-            color: var(--success);
-            font-weight: 600;
+        .book-test:hover {
+            background: var(--primary-dark);
         }
 
         /* How It Works */
         .how-it-works {
-            padding: 100px 5%;
+            padding: 80px 5%;
             background: var(--dark-light);
         }
 
         .steps-container {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 2rem;
             max-width: 1200px;
             margin: 0 auto;
@@ -321,20 +395,20 @@
         }
 
         .step-number {
-            width: 80px;
-            height: 80px;
+            width: 70px;
+            height: 70px;
             background: linear-gradient(135deg, var(--primary), var(--secondary));
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 2rem;
+            font-size: 1.8rem;
             font-weight: 700;
             margin: 0 auto 1.5rem;
         }
 
         .step h4 {
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             margin-bottom: 0.5rem;
         }
 
@@ -345,13 +419,13 @@
 
         /* Packages Section */
         .packages {
-            padding: 100px 5%;
+            padding: 80px 5%;
         }
 
         .packages-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 2rem;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
             max-width: 1400px;
             margin: 0 auto;
         }
@@ -359,16 +433,21 @@
         .package-card {
             background: linear-gradient(135deg, var(--dark-light), var(--dark));
             border-radius: 24px;
-            padding: 3rem;
+            padding: 2.5rem;
             border: 1px solid rgba(99, 102, 241, 0.2);
             transition: all 0.3s;
             position: relative;
             overflow: hidden;
         }
 
+        .package-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--primary);
+        }
+
         .package-card.featured {
             border-color: var(--primary);
-            transform: scale(1.05);
+            border-width: 2px;
         }
 
         .package-card.featured::before {
@@ -385,7 +464,7 @@
         }
 
         .package-name {
-            font-size: 1.5rem;
+            font-size: 1.4rem;
             font-weight: 700;
             margin-bottom: 0.5rem;
         }
@@ -393,19 +472,7 @@
         .package-tests {
             color: var(--gray);
             margin-bottom: 1.5rem;
-        }
-
-        .package-price {
-            font-size: 2.5rem;
-            font-weight: 800;
-            color: var(--primary);
-            margin-bottom: 1.5rem;
-        }
-
-        .package-price span {
-            font-size: 1rem;
-            color: var(--gray);
-            text-decoration: line-through;
+            font-size: 0.95rem;
         }
 
         .package-features {
@@ -418,6 +485,7 @@
             display: flex;
             align-items: center;
             gap: 0.5rem;
+            font-size: 0.95rem;
         }
 
         .package-features li i {
@@ -426,7 +494,7 @@
 
         /* Footer */
         .footer {
-            background: var(--dark-light);
+            background: var(--dark);
             padding: 60px 5% 30px;
             text-align: center;
         }
@@ -434,7 +502,7 @@
         .footer-links {
             display: flex;
             justify-content: center;
-            gap: 3rem;
+            gap: 2rem;
             margin-bottom: 2rem;
             flex-wrap: wrap;
         }
@@ -455,27 +523,110 @@
             color: var(--gray);
         }
 
-        /* Responsive */
-        @media (max-width: 768px) {
+        /* Mobile Responsive */
+        @media (max-width: 992px) {
             .hero-content {
                 grid-template-columns: 1fr;
                 text-align: center;
+                gap: 2rem;
             }
 
-            .hero-text h1 {
-                font-size: 2.5rem;
+            .hero-image {
+                order: -1;
+            }
+
+            .hero-image img {
+                max-width: 350px;
+            }
+
+            .btn-group {
+                justify-content: center;
             }
 
             .stats-bar {
                 justify-content: center;
             }
+        }
 
-            .steps-container {
-                grid-template-columns: repeat(2, 1fr);
+        @media (max-width: 768px) {
+            .navbar {
+                padding: 1rem 4%;
             }
 
             .nav-links {
-                display: none;
+                position: fixed;
+                top: 70px;
+                left: 0;
+                right: 0;
+                background: var(--dark-light);
+                flex-direction: column;
+                padding: 2rem;
+                gap: 1.5rem;
+                transform: translateY(-150%);
+                transition: transform 0.3s ease;
+                text-align: center;
+            }
+
+            .nav-links.active {
+                transform: translateY(0);
+            }
+
+            .mobile-menu-btn {
+                display: block;
+            }
+
+            .hero {
+                padding: 100px 4% 60px;
+            }
+
+            .hero-text h1 {
+                font-size: 1.8rem;
+            }
+
+            .btn-primary, .btn-secondary {
+                padding: 0.8rem 1.5rem;
+                font-size: 0.9rem;
+            }
+
+            .tests-grid {
+                grid-template-columns: 1fr;
+                max-width: 400px;
+                margin: 0 auto;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .packages-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .steps-container {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            .stats-bar {
+                gap: 1.5rem;
+            }
+
+            .stat-number {
+                font-size: 1.5rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero-image img {
+                max-width: 280px;
+            }
+
+            .section-title h2 {
+                font-size: 1.5rem;
+            }
+
+            .package-card {
+                padding: 1.5rem;
             }
         }
     </style>
@@ -484,7 +635,10 @@
     <!-- Navigation -->
     <nav class="navbar">
         <a href="index.html" class="logo">Medz</a>
-        <ul class="nav-links">
+        <button class="mobile-menu-btn" onclick="toggleMenu()">
+            <i class="fas fa-bars"></i>
+        </button>
+        <ul class="nav-links" id="navLinks">
             <li><a href="index.html">Home</a></li>
             <li><a href="lab-tests.html" class="active">Lab Tests</a></li>
             <li><a href="petcare.html">PetCare</a></li>
@@ -498,13 +652,15 @@
         <div class="hero-content">
             <div class="hero-text" data-aos="fade-right">
                 <h1>Advanced <span>Lab Testing</span> Services at Your Doorstep</h1>
-                <p>Book 500+ diagnostic tests with home sample collection. Get accurate reports from NABL accredited labs within 24-48 hours. Trusted by doctors and patients across India.</p>
-                <a href="#packages" class="btn-primary">
-                    <i class="fas fa-flask"></i> Book a Test
-                </a>
-                <a href="#tests" class="btn-secondary">
-                    <i class="fas fa-list"></i> View All Tests
-                </a>
+                <p>Book 500+ diagnostic tests with home sample collection. Get accurate reports from NABL accredited labs within 24-48 hours.</p>
+                <div class="btn-group">
+                    <a href="#packages" class="btn-primary">
+                        <i class="fas fa-flask"></i> Book a Test
+                    </a>
+                    <a href="#tests" class="btn-secondary">
+                        <i class="fas fa-list"></i> View All Tests
+                    </a>
+                </div>
                 
                 <div class="stats-bar">
                     <div class="stat-item">
@@ -522,12 +678,12 @@
                 </div>
             </div>
             <div class="hero-image" data-aos="fade-left">
-                <img src="https://illustrations.popsy.co/amber/doctor.svg" alt="Lab Testing" style="width: 100%; max-width: 500px;">
+                <img src="https://images.unsplash.com/photo-1579154204601-01588f351e67?w=500&h=500&fit=crop" alt="Lab Testing">
             </div>
         </div>
     </section>
 
-    <!-- Unique Features -->
+    <!-- Features -->
     <section class="features">
         <div class="section-title" data-aos="fade-up">
             <h2>Why Choose Our Lab Services?</h2>
@@ -540,7 +696,7 @@
                     <i class="fas fa-home"></i>
                 </div>
                 <h3>Free Home Sample Collection</h3>
-                <p>Our certified phlebotomists visit your home at your preferred time. No extra charges for sample collection.</p>
+                <p>Our certified phlebotomists visit your home at your preferred time. No extra charges.</p>
             </div>
             
             <div class="feature-card" data-aos="fade-up" data-aos-delay="200">
@@ -548,7 +704,7 @@
                     <i class="fas fa-certificate"></i>
                 </div>
                 <h3>NABL & ISO Certified Labs</h3>
-                <p>All tests processed in NABL accredited and ISO 15189 certified laboratories ensuring international quality standards.</p>
+                <p>All tests processed in NABL accredited and ISO 15189 certified laboratories.</p>
             </div>
             
             <div class="feature-card" data-aos="fade-up" data-aos-delay="300">
@@ -556,7 +712,7 @@
                     <i class="fas fa-clock"></i>
                 </div>
                 <h3>Reports in 24 Hours</h3>
-                <p>Get your digital reports within 24 hours. Critical reports available within 6 hours with priority processing.</p>
+                <p>Get your digital reports within 24 hours. Critical reports available within 6 hours.</p>
             </div>
             
             <div class="feature-card" data-aos="fade-up" data-aos-delay="400">
@@ -564,96 +720,112 @@
                     <i class="fas fa-user-md"></i>
                 </div>
                 <h3>Free Doctor Consultation</h3>
-                <p>Get free post-report consultation with experienced doctors to understand your health parameters.</p>
-            </div>
-            
-            <div class="feature-card" data-aos="fade-up" data-aos-delay="500">
-                <div class="feature-icon">
-                    <i class="fas fa-mobile-alt"></i>
-                </div>
-                <h3>Smart Health Tracking</h3>
-                <p>Track your health trends over time with our AI-powered dashboard. Get personalized health insights.</p>
-            </div>
-            
-            <div class="feature-card" data-aos="fade-up" data-aos-delay="600">
-                <div class="feature-icon">
-                    <i class="fas fa-shield-alt"></i>
-                </div>
-                <h3>100% Accurate Results</h3>
-                <p>Triple verification process and quality control ensures 99.9% accuracy in all test results.</p>
+                <p>Get free post-report consultation with experienced doctors to understand results.</p>
             </div>
         </div>
     </section>
 
-    <!-- Test Categories -->
+    <!-- Tests Section -->
     <section class="tests-section" id="tests">
         <div class="section-title" data-aos="fade-up">
-            <h2>Popular Test Categories</h2>
+            <h2>Popular Lab Tests</h2>
             <p>Comprehensive diagnostic tests for complete health checkup</p>
         </div>
         
         <div class="tests-grid">
             <div class="test-card" data-aos="fade-up">
-                <div class="test-icon"><i class="fas fa-tint"></i></div>
+                <div class="test-image">
+                    <img src="https://images.unsplash.com/photo-1579154204601-01588f351e67?w=400&h=250&fit=crop" alt="Blood Test">
+                </div>
                 <div class="test-info">
-                    <h4>Complete Blood Count (CBC)</h4>
-                    <span>₹299</span> <small style="color: var(--gray);">| Reports in 12 hrs</small>
+                    <div class="test-category">Blood Test</div>
+                    <div class="test-name">Complete Blood Count (CBC)</div>
+                    <div class="test-desc">Measures red blood cells, white blood cells, hemoglobin and platelets</div>
+                    <button class="book-test"><i class="fas fa-calendar-check"></i> Book Test</button>
                 </div>
             </div>
             
             <div class="test-card" data-aos="fade-up" data-aos-delay="100">
-                <div class="test-icon"><i class="fas fa-heart"></i></div>
+                <div class="test-image">
+                    <img src="https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=400&h=250&fit=crop" alt="Lipid Profile">
+                </div>
                 <div class="test-info">
-                    <h4>Lipid Profile</h4>
-                    <span>₹449</span> <small style="color: var(--gray);">| Reports in 24 hrs</small>
+                    <div class="test-category">Heart Health</div>
+                    <div class="test-name">Lipid Profile</div>
+                    <div class="test-desc">Measures cholesterol levels including HDL, LDL and triglycerides</div>
+                    <button class="book-test"><i class="fas fa-calendar-check"></i> Book Test</button>
                 </div>
             </div>
             
             <div class="test-card" data-aos="fade-up" data-aos-delay="200">
-                <div class="test-icon"><i class="fas fa-liver"></i></div>
+                <div class="test-image">
+                    <img src="https://images.unsplash.com/photo-1582719471384-894fbb16e074?w=400&h=250&fit=crop" alt="Liver Function">
+                </div>
                 <div class="test-info">
-                    <h4>Liver Function Test (LFT)</h4>
-                    <span>₹549</span> <small style="color: var(--gray);">| Reports in 24 hrs</small>
+                    <div class="test-category">Liver Health</div>
+                    <div class="test-name">Liver Function Test (LFT)</div>
+                    <div class="test-desc">Checks liver enzymes, proteins and bilirubin levels</div>
+                    <button class="book-test"><i class="fas fa-calendar-check"></i> Book Test</button>
                 </div>
             </div>
             
             <div class="test-card" data-aos="fade-up" data-aos-delay="300">
-                <div class="test-icon"><i class="fas fa-kidneys"></i></div>
+                <div class="test-image">
+                    <img src="https://images.unsplash.com/photo-1576086213369-97a306d36557?w=400&h=250&fit=crop" alt="Kidney Function">
+                </div>
                 <div class="test-info">
-                    <h4>Kidney Function Test (KFT)</h4>
-                    <span>₹499</span> <small style="color: var(--gray);">| Reports in 24 hrs</small>
+                    <div class="test-category">Kidney Health</div>
+                    <div class="test-name">Kidney Function Test (KFT)</div>
+                    <div class="test-desc">Measures creatinine, urea and electrolyte levels</div>
+                    <button class="book-test"><i class="fas fa-calendar-check"></i> Book Test</button>
                 </div>
             </div>
             
             <div class="test-card" data-aos="fade-up" data-aos-delay="400">
-                <div class="test-icon"><i class="fas fa-dna"></i></div>
+                <div class="test-image">
+                    <img src="https://images.unsplash.com/photo-1530026405186-ed1f139313f8?w=400&h=250&fit=crop" alt="Thyroid Profile">
+                </div>
                 <div class="test-info">
-                    <h4>Thyroid Profile (T3, T4, TSH)</h4>
-                    <span>₹599</span> <small style="color: var(--gray);">| Reports in 24 hrs</small>
+                    <div class="test-category">Thyroid</div>
+                    <div class="test-name">Thyroid Profile (T3, T4, TSH)</div>
+                    <div class="test-desc">Complete thyroid hormone analysis for thyroid function</div>
+                    <button class="book-test"><i class="fas fa-calendar-check"></i> Book Test</button>
                 </div>
             </div>
             
             <div class="test-card" data-aos="fade-up" data-aos-delay="500">
-                <div class="test-icon"><i class="fas fa-candy-cane"></i></div>
+                <div class="test-image">
+                    <img src="https://images.unsplash.com/photo-1576602976047-174e57a47881?w=400&h=250&fit=crop" alt="Diabetes Panel">
+                </div>
                 <div class="test-info">
-                    <h4>Diabetes Panel (HbA1c + Glucose)</h4>
-                    <span>₹699</span> <small style="color: var(--gray);">| Reports in 24 hrs</small>
+                    <div class="test-category">Diabetes</div>
+                    <div class="test-name">Diabetes Panel (HbA1c + Glucose)</div>
+                    <div class="test-desc">Complete diabetes screening with fasting glucose and HbA1c</div>
+                    <button class="book-test"><i class="fas fa-calendar-check"></i> Book Test</button>
                 </div>
             </div>
             
             <div class="test-card" data-aos="fade-up" data-aos-delay="600">
-                <div class="test-icon"><i class="fas fa-pills"></i></div>
+                <div class="test-image">
+                    <img src="https://images.unsplash.com/photo-1559757175-5700dde675bc?w=400&h=250&fit=crop" alt="Vitamin Test">
+                </div>
                 <div class="test-info">
-                    <h4>Vitamin D & B12</h4>
-                    <span>₹899</span> <small style="color: var(--gray);">| Reports in 24 hrs</small>
+                    <div class="test-category">Vitamins</div>
+                    <div class="test-name">Vitamin D & B12</div>
+                    <div class="test-desc">Essential vitamin levels test for bone and nerve health</div>
+                    <button class="book-test"><i class="fas fa-calendar-check"></i> Book Test</button>
                 </div>
             </div>
             
             <div class="test-card" data-aos="fade-up" data-aos-delay="700">
-                <div class="test-icon"><i class="fas fa-x-ray"></i></div>
+                <div class="test-image">
+                    <img src="https://images.unsplash.com/photo-1516549655169-df83a0774514?w=400&h=250&fit=crop" alt="X-Ray">
+                </div>
                 <div class="test-info">
-                    <h4>Chest X-Ray</h4>
-                    <span>₹399</span> <small style="color: var(--gray);">| Reports in 6 hrs</small>
+                    <div class="test-category">Imaging</div>
+                    <div class="test-name">Chest X-Ray</div>
+                    <div class="test-desc">Digital X-ray imaging for chest and lung examination</div>
+                    <button class="book-test"><i class="fas fa-calendar-check"></i> Book Test</button>
                 </div>
             </div>
         </div>
@@ -694,14 +866,13 @@
     <section class="packages" id="packages">
         <div class="section-title" data-aos="fade-up">
             <h2>Popular Health Packages</h2>
-            <p>Comprehensive health checkup packages at best prices</p>
+            <p>Comprehensive health checkup packages for complete wellness</p>
         </div>
         
         <div class="packages-grid">
             <div class="package-card" data-aos="fade-up">
                 <div class="package-name">Basic Health Checkup</div>
                 <div class="package-tests">30+ Tests Included</div>
-                <div class="package-price">₹999 <span>₹1,999</span></div>
                 <ul class="package-features">
                     <li><i class="fas fa-check-circle"></i> Complete Blood Count</li>
                     <li><i class="fas fa-check-circle"></i> Lipid Profile</li>
@@ -716,7 +887,6 @@
             <div class="package-card featured" data-aos="fade-up" data-aos-delay="100">
                 <div class="package-name">Complete Health Checkup</div>
                 <div class="package-tests">60+ Tests Included</div>
-                <div class="package-price">₹1,999 <span>₹3,999</span></div>
                 <ul class="package-features">
                     <li><i class="fas fa-check-circle"></i> All Basic Tests +</li>
                     <li><i class="fas fa-check-circle"></i> Thyroid Profile</li>
@@ -731,7 +901,6 @@
             <div class="package-card" data-aos="fade-up" data-aos-delay="200">
                 <div class="package-name">Premium Health Checkup</div>
                 <div class="package-tests">100+ Tests Included</div>
-                <div class="package-price">₹3,499 <span>₹6,999</span></div>
                 <ul class="package-features">
                     <li><i class="fas fa-check-circle"></i> All Complete Tests +</li>
                     <li><i class="fas fa-check-circle"></i> Cardiac Risk Markers</li>
@@ -766,6 +935,10 @@
             duration: 800,
             once: true
         });
+
+        function toggleMenu() {
+            document.getElementById('navLinks').classList.toggle('active');
+        }
     </script>
 </body>
 </html>
