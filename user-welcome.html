@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to Medz!</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <style>
+        body {
+            min-height: 100vh;
+            margin: 0;
+            background: linear-gradient(120deg, #6a11cb 0%, #2575fc 100%);
+            font-family: 'Segoe UI', Arial, sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .card {
+            background: #fff;
+            border-radius: 18px;
+            box-shadow: 0 8px 32px rgba(80,80,180,0.18);
+            max-width: 420px;
+            width: 100%;
+            padding: 38px 32px 32px 32px;
+            text-align: center;
+            position: relative;
+        }
+        .card .icon {
+            font-size: 48px;
+            color: #2575fc;
+            margin-bottom: 12px;
+        }
+        .card h2 {
+            color: #2575fc;
+            margin-bottom: 10px;
+            font-size: 2rem;
+        }
+        .card p {
+            color: #444;
+            margin-bottom: 28px;
+        }
+        .form-group {
+            margin-bottom: 18px;
+            text-align: left;
+        }
+        .form-group label {
+            font-weight: 500;
+            color: #333;
+            margin-bottom: 6px;
+            display: block;
+        }
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border-radius: 7px;
+            border: 1px solid #bdbdbd;
+            font-size: 1rem;
+            background: #f7f9fa;
+            transition: border 0.2s;
+        }
+        .form-group input:focus, .form-group textarea:focus {
+            border: 1.5px solid #2575fc;
+            outline: none;
+        }
+        button {
+            width: 100%;
+            background: linear-gradient(90deg, #6a11cb 0%, #2575fc 100%);
+            color: #fff;
+            border: none;
+            padding: 12px 0;
+            border-radius: 7px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 8px;
+            transition: background 0.2s;
+        }
+        button:hover {
+            background: linear-gradient(90deg, #2575fc 0%, #6a11cb 100%);
+        }
+        .success {
+            color: #38a169;
+            font-weight: 600;
+            margin-top: 18px;
+        }
+        .error {
+            color: #e53e3e;
+            font-weight: 600;
+            margin-top: 18px;
+        }
+        @media (max-width: 500px) {
+            .card { padding: 22px 6vw; }
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <div class="icon"><i class="fa-solid fa-user-plus"></i></div>
+        <h2>Welcome to Medz!</h2>
+        <p>Thank you for starting your journey with us.<br>Fill the form below to join our community!</p>
+        <form id="userForm">
+            <div class="form-group">
+                <label for="name">Name</label>
+                <input type="text" id="name" name="name" placeholder="Your Name" required>
+            </div>
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" placeholder="Your Email" required>
+            </div>
+            <div class="form-group">
+                <label for="message">Message (optional)</label>
+                <textarea id="message" name="message" placeholder="How can we help you?" rows="3"></textarea>
+            </div>
+            <button type="submit"><i class="fa-solid fa-paper-plane"></i> Join Now</button>
+        </form>
+        <div id="formStatus"></div>
+    </div>
+    <script>
+        // Replace with your Google Form's formResponse URL and entry IDs
+        const GOOGLE_FORM_ACTION = "https://docs.google.com/forms/d/e/1FAIpQLSdbAfjDshppuI5Cq93ASUzvH9y3Eb-_FbMvLN0aSi6dKXz4QQ/formResponse";
+        const ENTRY_NAME = "entry.XXXXXXXXXX"; // Replace with your Google Form entry for name
+        const ENTRY_EMAIL = "entry.YYYYYYYYYY"; // Replace with your Google Form entry for email
+        const ENTRY_MESSAGE = "entry.ZZZZZZZZZZ"; // Replace with your Google Form entry for message
+
+        document.getElementById('userForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const message = document.getElementById('message').value;
+
+            const formData = new FormData();
+            formData.append(ENTRY_NAME, name);
+            formData.append(ENTRY_EMAIL, email);
+            formData.append(ENTRY_MESSAGE, message);
+
+            fetch(GOOGLE_FORM_ACTION, {
+                method: 'POST',
+                mode: 'no-cors',
+                body: formData
+            }).then(() => {
+                document.getElementById('formStatus').innerHTML = '<div class="success">Thank you for joining Medz! We will contact you soon.</div>';
+                document.getElementById('userForm').reset();
+            }).catch(() => {
+                document.getElementById('formStatus').innerHTML = '<div class="error">Error submitting form. Please try again.</div>';
+            });
+        });
+    </script>
+</body>
+</html>
